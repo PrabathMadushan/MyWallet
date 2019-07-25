@@ -13,6 +13,7 @@ import com.prabath.mywallet.R;
 
 public class BaseActivity extends AppCompatActivity {
 
+    //base activity
 
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
