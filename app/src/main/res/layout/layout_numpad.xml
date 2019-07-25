@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="300dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/asdasxsax"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView23">
+
+        <ImageButton
+            android:id="@+id/categoryicon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/style_button_circle_rose"
+            android:onClick="toSelectCategory"
+            android:tint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/db_exp_bills" />
+
+        <EditText
+            android:id="@+id/txtDescription"
+            android:layout_width="128dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/style_textview_nothing"
+            android:drawableStart="@drawable/ic_nui_edit"
+            android:drawableLeft="@drawable/ic_nui_edit"
+            android:drawablePadding="5dp"
+            android:drawableTint="@color/lightGray"
+            android:ems="10"
+            android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/categoryicon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="m" />
+
+        <TextView
+            android:id="@+id/txtValue"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="end|center"
+            android:paddingLeft="10dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/_0"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txtDescription"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TableLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:shrinkColumns="*"
+        android:stretchColumns="*"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/asdasxsax">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_7" />
+
+            <Button
+                android:id="@+id/btn8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_8" />
+
+            <Button
+                android:id="@+id/btn9"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_9" />
+
+            <TextView
+                android:id="@+id/btnDate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:gravity="center"
+                android:onClick="setDate"
+                android:text="2019/02/19"
+                android:textColor="@android:color/black" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_4" />
+
+            <Button
+                android:id="@+id/btn5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_5" />
+
+            <Button
+                android:id="@+id/btn6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_6" />
+
+            <TextView
+                android:id="@+id/btnTime"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:gravity="center"
+                android:text="07:00 AM"
+                android:onClick="setTime"
+                android:textColor="@android:color/black" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
+            >
+
+            <Button
+                android:id="@+id/btn1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_1" />
+
+            <Button
+                android:id="@+id/btn2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_2" />
+
+            <Button
+                android:id="@+id/btn3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_3" />
+
+            <Button
+                android:id="@+id/btnminaus"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/c" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btnc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/fpoint" />
+
+            <Button
+                android:id="@+id/btn0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:text="@string/_0" />
+
+            <ImageButton
+                android:id="@+id/btndelete"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/style_back_calc_cell_hover_hover"
+                android:onClick="numberPress"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_nui_calc_c" />
+
+            <ImageView
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_nui_calc_cellx"
+                android:scaleType="center"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_nui_ok" />
+        </TableRow>
+
+    </TableLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/textView23"
+        android:layout_width="0dp"
+        android:layout_height="23dp"
+        android:background="@drawable/style_list_item"
+        app:layout_constraintBottom_toTopOf="@+id/asdasxsax"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/categoryname"
+            android:layout_width="0dp"
+            android:layout_height="23dp"
+            android:background="@color/darkGray"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

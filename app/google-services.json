@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "487054073947",
+    "firebase_url": "https://mywallet-e54f2.firebaseio.com",
+    "project_id": "mywallet-e54f2",
+    "storage_bucket": "mywallet-e54f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487054073947:android:c6b0b690802d6e58",
+        "android_client_info": {
+          "package_name": "com.prabath.mywallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487054073947-3n0sufodcm8p819ig5serovdch34oimg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prabath.mywallet",
+            "certificate_hash": "c7e22f2c897ec7784d230b413b4574120d81ec20"
+          }
+        },
+        {
+          "client_id": "487054073947-u3vsss0dds8q5g802tokhp23a5cgo3bi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVe3QnniIfvAaCJ9RU7xUFg8Y-uLin5Dk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487054073947-u3vsss0dds8q5g802tokhp23a5cgo3bi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

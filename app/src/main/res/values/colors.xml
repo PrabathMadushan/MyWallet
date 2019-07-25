@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#652CDB</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#E51997</color>
+    <color name="darkGray">#353535</color>
+    <color name="lightGray">#B6B6B6</color>
+
+    <color name="background">#F3F3F3</color>
+    <color name="primaryBlueDark">#652CDB</color>
+    <color name="primaryBlueLight">#459DDB</color>
+
+    <!--<color name="primaryBlueDark">#238B0D</color>-->
+    <!--<color name="primaryBlueLight">#6AEC99</color>-->
+    <color name="primaryRoseDark">#E51997</color>
+    <color name="primaryRoseLight">#FF849E</color>
+    <color name="normalText">#404042</color>
+    <color name="errorTextBox">#FF9800</color>
+    <color name="normalBlue">#344FE4</color>
+
+    <color name="inforStart">#652CDB</color>
+    <color name="inforEnd">#459DDB</color>
+
+    <color name="wornStart">#FF5722</color>
+    <color name="wornEnd">#FF9800</color>
+
+    <color name="quacStart">#9C27B0</color>
+    <color name="quacEnd">#03A9F4</color>
+
+    <color name="errorStart">#E91E63</color>
+    <color name="errorEnd">#F44336</color>
+
+
+</resources>

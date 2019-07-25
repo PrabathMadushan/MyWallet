@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    tools:context=".fregments.AddLocationFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mapWraper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <fragment
+            android:id="@+id/locationMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.google.android.gms.maps.SupportMapFragment" />
+
+        <ImageButton
+            android:id="@+id/btnSearchOrigin"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="68dp"
+            android:tint="@android:color/white"
+            android:background="@drawable/style_button_circle_blue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_nui_search" />
+
+        <ImageButton
+            android:id="@+id/btnSetDestinationMyLocation"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/style_button_circle_blue"
+            android:tint="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/btnSearchOrigin"
+            app:layout_constraintStart_toStartOf="@+id/btnSearchOrigin"
+            app:layout_constraintTop_toBottomOf="@+id/btnSearchOrigin"
+            app:srcCompat="@drawable/ic_nui_my_location" />
+
+        <TextView
+            android:id="@+id/txtPlaceName"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="My Location"
+            android:textSize="18dp"
+            android:gravity="center_vertical"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSearchOrigin"
+            app:layout_constraintStart_toEndOf="@+id/btnSearchOrigin"
+            app:layout_constraintTop_toTopOf="@+id/btnSearchOrigin" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
