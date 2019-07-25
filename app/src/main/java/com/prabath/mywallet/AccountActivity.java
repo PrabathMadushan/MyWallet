@@ -3,7 +3,6 @@ package com.prabath.mywallet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -53,7 +52,7 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
-    public static String EXTRA_RECORD = "exRecord";
+    public static String EXTRA_RECORD = "EXTRA_RECORD";
 
     public void addNewRecord(View view) {
         Record record = new Record();
