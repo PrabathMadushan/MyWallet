@@ -19,7 +19,7 @@ import database.local.models.Record;
 
 public class AccountActivity extends AppCompatActivity {
 
-    //this is comment
+
     private Account account;
 
     @Override

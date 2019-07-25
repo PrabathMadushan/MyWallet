@@ -1,5 +1,6 @@
 package database.local;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -128,8 +129,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
 
         CategoryIcons iconsGeter = CategoryIcons.getInstance();
         Date date = new Date();
-        String today = new SimpleDateFormat("yyyy/MM/dd").format(date);
-        String now = new SimpleDateFormat("hh:mm:ss").format(date);
+        @SuppressLint("SimpleDateFormat") String today = new SimpleDateFormat("yyyy/MM/dd").format(date);
+        @SuppressLint("SimpleDateFormat") String now = new SimpleDateFormat("hh:mm:ss").format(date);
 
         for(int i=0;i<icons_income.length;i++){
             Category c1 = new Category(
@@ -176,8 +177,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
 
         AccountIcons iconsGeter = AccountIcons.getInstance();
         Date date = new Date();
-        String today = new SimpleDateFormat("yyyy/MM/dd").format(date);
-        String now = new SimpleDateFormat("hh:mm:ss").format(date);
+        @SuppressLint("SimpleDateFormat") String today = new SimpleDateFormat("yyyy/MM/dd").format(date);
+        @SuppressLint("SimpleDateFormat") String now = new SimpleDateFormat("hh:mm:ss").format(date);
         for(int i=0;i<icons.length;i++){
             Account a = new Account(
                     LocalDatabaseController.genareteRandomKey(),
@@ -193,6 +194,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
 
 
     }
+
 
     private String account() {
         return Account.CREATE_SQL;
