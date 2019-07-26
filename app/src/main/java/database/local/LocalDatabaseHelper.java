@@ -191,8 +191,6 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
             a.setDefault(true);
             db.execSQL(Account.INSERT_SQL(a));
         }
-
-
     }
 
 
