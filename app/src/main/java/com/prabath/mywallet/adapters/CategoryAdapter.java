@@ -34,7 +34,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
     private List<Category> categories;
     private Context context;
-    LocalDatabaseController.TableCategory tableCategory;
+    private LocalDatabaseController.TableCategory tableCategory;
 
 
     public CategoryAdapter(List<Category> categories, Context context, LocalDatabaseController.TableCategory tableCategory) {
@@ -51,12 +51,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         return new MyViewHolder(itemView);
     }
 
-    int lastPosition = -1;
+    private int lastPosition = -1;
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int i) {
         final Category category = categories.get(i);
-        System.out.println("de:" + category.isDefault());
         if (category.isDefault()) {
             myViewHolder.edit.setEnabled(false);
             myViewHolder.delet.setEnabled(false);
