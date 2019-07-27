@@ -43,7 +43,7 @@ public class LocalDatabaseController {
         }
 
         public void remove(Category category){
-            if(!category.isDefualt()){
+            if (!category.isDefault()) {
                 database.execSQL(Category.REMOVE_SQL(category.getId()));
             }
         }
@@ -66,7 +66,7 @@ public class LocalDatabaseController {
                 category.setDate(date);
                 category.setTime(time);
                 category.setIcon(icon);
-                category.setDefualt(Boolean.parseBoolean(defaultx));
+                category.setDefault(Boolean.parseBoolean(defaultx));
                 categories.add(category);
             }
 

@@ -43,7 +43,7 @@ public class Category implements Serializable {
                 "'" + category.getType().toString() + "'," +
                 "'" + category.getDate() + "'," +
                 "'" + category.getTime() + "'," +
-                "'" + category.isDefualt() + "'" +
+                "'" + category.isDefault() + "'" +
                 ");";
     }
 
@@ -75,7 +75,7 @@ public class Category implements Serializable {
     private CategoryType type;
     private String date;
     private String time;
-    private boolean defualt = false;
+    private boolean defaultx = false;
 
     public Category() {
     }
@@ -96,12 +96,12 @@ public class Category implements Serializable {
         this.time = time;
     }
 
-    public boolean isDefualt() {
-        return defualt;
+    public boolean isDefault() {
+        return defaultx;
     }
 
-    public void setDefualt(boolean defualt) {
-        this.defualt = defualt;
+    public void setDefault(boolean defaultx) {
+        this.defaultx = defaultx;
     }
 
     public String getId() {

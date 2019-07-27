@@ -141,7 +141,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     today,
                     now
             );
-            c1.setDefualt(true);
+            c1.setDefault(true);
             db.execSQL(Category.INSERT_SQL(c1));
         }
         for(int i=0;i<icons_expense.length;i++){
@@ -153,7 +153,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     today,
                     now
             );
-            c1.setDefualt(true);
+            c1.setDefault(true);
             db.execSQL(Category.INSERT_SQL(c1));
         }
 

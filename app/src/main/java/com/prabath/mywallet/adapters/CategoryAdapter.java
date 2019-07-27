@@ -56,8 +56,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int i) {
         final Category category = categories.get(i);
-        System.out.println("de:"+category.isDefualt());
-        if(category.isDefualt()){
+        System.out.println("de:" + category.isDefault());
+        if (category.isDefault()) {
             myViewHolder.edit.setEnabled(false);
             myViewHolder.delet.setEnabled(false);
             myViewHolder.edit.setAlpha(0.2f);
