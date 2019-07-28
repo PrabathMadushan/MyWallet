@@ -57,9 +57,7 @@ public class CategoriesActivity extends AppCompatActivity {
     private void showCategories() {
         List<Category> cs = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(getApplicationContext())).new TableCategory().get(null);
         Collections.reverse(cs);
-        for (Category c : cs) {
-            categories.add(c);
-        }
+        categories.addAll(cs);
         categoryAdapter.notifyDataSetChanged();
     }
 

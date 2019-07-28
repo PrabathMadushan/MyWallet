@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,7 +42,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
     private LocalDatabaseController.TableAccount tableAccount;
 
     private IconSelecterFragment iconSelecterFragment;
-    private TextView name;
+    private EditText name;
     private TextView description;
 
     @Override
@@ -153,8 +154,6 @@ public class AddNewAccountActivity extends AppCompatActivity {
             tableAccount.add(account);
             back();
         }
-
-
     }
 
     private void updateAccount() {

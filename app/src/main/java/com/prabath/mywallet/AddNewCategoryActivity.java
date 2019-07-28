@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -34,9 +35,9 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     public static final String TYPE = "type";
     public static final String TYPE_EDIT = "edit";
     public static final String TYPE_NEW = "new";
-    public static final String CATEGORY_ID="ct_id";
+    public static final String CATEGORY_ID = "ct_id";
 
-    private  String type;
+    private String type;
     private Category editCategory;
     IconSelecterFragment iconSelecterFragment;
 
@@ -46,7 +47,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     private TextView title;
     private ImageView icon;
     private Button actionButton;
-    private TextView name;
+    private EditText name;
 
     private LocalDatabaseController.TableCategory tableCategory;
 
@@ -61,7 +62,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         type = intent.getStringExtra(TYPE);
         if (type.equals(TYPE_EDIT)) {
             String id = intent.getStringExtra(CATEGORY_ID);
-            editCategory=loadCategory(id);
+            editCategory = loadCategory(id);
             setupTitleLayoutEdit();
         } else {
             setupTitleLayoutAddNew();
@@ -71,7 +72,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     public void addFragment(int current) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        iconSelecterFragment = IconSelecterFragment.getInstance(CategoryIcons.getInstance(),current);
+        iconSelecterFragment = IconSelecterFragment.getInstance(CategoryIcons.getInstance(), current);
         transaction.replace(R.id.fragment_wraper, iconSelecterFragment);
         transaction.commit();
     }
@@ -82,20 +83,21 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         applyEntranceAnimation();
     }
 
-    private Category loadCategory(String id){
+    private Category loadCategory(String id) {
         List<Category> categories = tableCategory.get("id='" + id + "'");
         return categories.get(0);
     }
+
     private void initComponents() {
         title = findViewById(R.id.titleText);
         icon = findViewById(R.id.titleIcon);
-        name=findViewById(R.id.txtName);
-        expense=findViewById(R.id.rdbExpence);
-        income=findViewById(R.id.rdbIncome);
+        name = findViewById(R.id.txtName);
+        expense = findViewById(R.id.rdbExpence);
+        income = findViewById(R.id.rdbIncome);
         title.setAlpha(0);
         icon.setAlpha(0f);
-        actionButton =findViewById(R.id.btnCancel);
-        tableCategory=LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(getApplicationContext())).new TableCategory();
+        actionButton = findViewById(R.id.btnCancel);
+        tableCategory = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(getApplicationContext())).new TableCategory();
 
     }
 
@@ -112,9 +114,9 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         titleText.setText("Edit Category");
         icon.setImageResource(R.drawable.ic_nui_edit);
         actionButton.setText("UPDATE");
-        if (editCategory.getType().equals(CategoryType.EXPENSE)){
+        if (editCategory.getType().equals(CategoryType.EXPENSE)) {
             expense.setChecked(true);
-        }else {
+        } else {
             income.setChecked(true);
         }
         name.setText(editCategory.getName());
@@ -166,7 +168,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
             Category category = new Category();
             category.setId(LocalDatabaseController.genareteRandomKey());
             category.setName(name.getText().toString());
-           category.setIcon(iconSelecterFragment.getSelectedIconId());
+            category.setIcon(iconSelecterFragment.getSelectedIconId());
             Date today = new Date();
             category.setDate(new SimpleDateFormat("yyyy:MM:dd").format(today));
             category.setTime(new SimpleDateFormat("hh:mm:ss").format(today));
@@ -192,8 +194,6 @@ public class AddNewCategoryActivity extends AppCompatActivity {
             return null;
         }
     }
-
-
 
 
 }

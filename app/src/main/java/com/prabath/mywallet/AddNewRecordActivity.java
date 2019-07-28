@@ -34,6 +34,7 @@ import com.prabath.mywallet.fregments.TitleFragment;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -51,6 +52,10 @@ public class AddNewRecordActivity extends AppCompatActivity {
     private AddRouteFragment routeFragment;
 
     private Record record;
+
+    public AddNewRecordActivity() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +126,11 @@ public class AddNewRecordActivity extends AppCompatActivity {
                 addRecord();
             }
         });
+        TextView btnDate = findViewById(R.id.btnDate);
+        TextView btnTime = findViewById(R.id.btnTime);
+        java.util.Date date = new java.util.Date();
+        btnDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(date));
+        btnTime.setText(new SimpleDateFormat("hh:mm:ss").format(date));
     }
 
 

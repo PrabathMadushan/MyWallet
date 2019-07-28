@@ -9,16 +9,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.prabath.mywallet.Listeners.RecordSelectListener;
 import com.prabath.mywallet.Others.CategoryIcons;
+import com.prabath.mywallet.Others.Commons;
 import com.prabath.mywallet.R;
 
 import java.util.List;
 
+import database.local.models.CategoryType;
 import database.local.models.Record;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHolder> {
@@ -44,8 +47,13 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull RecordAdapter.MyViewHolder holder, int position) {
         Record record = records.get(position);
-        holder.value.setText("Rs." + record.getValue());
+        holder.value.setText("Rs." + Commons.formatCurrency(record.getValue()));
         holder.categoryIcon.setImageResource(CategoryIcons.getInstance().getIcon(Integer.parseInt(record.getCategory().getIcon())));
+        if (record.getCategory().getType() == CategoryType.EXPENSE) {
+            holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryRoseDark), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryBlueDark), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
         if (position > lastPosition) {
             YoYo.with(Techniques.ZoomInUp).duration(200).playOn(holder.root);
             lastPosition = position;
@@ -73,8 +81,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
             value = itemView.findViewById(R.id.value);
             delete = itemView.findViewById(R.id.btnDelete);
             edit = itemView.findViewById(R.id.btnEdit);
-            root = itemView.findViewById(R.id.root);
+            root = itemView.findViewById(R.id.recordItemWraper);
 
+            root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    YoYo.with(Techniques.RubberBand).duration(500).playOn(root);
+                }
+            });
         }
     }
 }

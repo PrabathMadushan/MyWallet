@@ -154,7 +154,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            root = itemView.findViewById(R.id.categoryItemWraper);
+            root = itemView.findViewById(R.id.recordItemWraper);
             name = itemView.findViewById(R.id.value);
             icon = itemView.findViewById(R.id.categoryIcon);
             edit = itemView.findViewById(R.id.btnEdit);
