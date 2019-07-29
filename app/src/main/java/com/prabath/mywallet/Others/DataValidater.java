@@ -31,6 +31,8 @@ public class DataValidater {
                 applyAnimation(p2);
                 return false;
             } else {
+                p1.setBackgroundResource(R.drawable.style_textbox_normal);
+                p2.setBackgroundResource(R.drawable.style_textbox_normal);
                 return true;
             }
         } else {

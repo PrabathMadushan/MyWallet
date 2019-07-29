@@ -47,7 +47,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull RecordAdapter.MyViewHolder holder, int position) {
         Record record = records.get(position);
-        holder.value.setText("Rs." + Commons.formatCurrency(record.getValue()));
+        holder.value.setText(Commons.formatCurrency(record.getValue()));
         holder.categoryIcon.setImageResource(CategoryIcons.getInstance().getIcon(Integer.parseInt(record.getCategory().getIcon())));
         if (record.getCategory().getType() == CategoryType.EXPENSE) {
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryRoseDark), android.graphics.PorterDuff.Mode.SRC_IN);

@@ -1,4 +1,4 @@
-package database.local.models;
+package database.firebase.models;
 
 
 import java.sql.Date;

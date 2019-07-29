@@ -1,28 +1,26 @@
 package com.prabath.mywallet;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.afollestad.materialdialogs.DialogBehavior;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.MaterialDialogKt;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,14 +31,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -49,32 +39,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        icon=findViewById(R.id.walletIcon);
-        title=findViewById(R.id.txtTitle);
-        des=findViewById(R.id.txtDes);
-        wraper=findViewById(R.id.mywraper);
+        //Testing
+        drawChart();
     }
 
-    ImageView icon;
-    TextView title;
-    TextView des;
-    ConstraintLayout wraper;
-
-    public void gotoLogin(View v){
-        Intent logingIntent=new Intent(this, LoginActivity.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Pair[] pairs=new Pair[4];
-            pairs[0]=new Pair<View,String>(icon,"trTextIcon");
-            pairs[1]=new Pair<View,String>(title,"trTextWallet");
-            pairs[2]=new Pair<View,String>(des,"trTextDes");
-            pairs[3]=new Pair<View,String>(des,"trWraper");
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, pairs);
-            startActivity(logingIntent,options.toBundle());
-        }else{
-            startActivity(logingIntent);
-        }
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -138,11 +106,68 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void finish() {
-
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
+    }
+
+    //Testing
+
+    public void drawChart() {
+        BarChart chart = findViewById(R.id.pieChart);
+        ArrayList<BarEntry> list = new ArrayList<>();
+        list.add(new BarEntry(0, 20));
+        list.add(new BarEntry(10, 90));
+        list.add(new BarEntry(20, 15));
+        list.add(new BarEntry(30, 85));
+        list.add(new BarEntry(40, 18));
+        list.add(new BarEntry(50, 40));
+        list.add(new BarEntry(60, 50));
+
+        BarDataSet dataSet = new BarDataSet(list, "Projects");
+        BarData data = new BarData(dataSet);
+        chart.setData(data);
+
+        //Custermize chart
+        chart.setDescription(null);
+        data.setBarWidth(8);
+        chart.setFitBars(true);
+        chart.setClickable(false);
+
+        ArrayList<LegendEntry> legendEntries = new ArrayList<>();
+        String names[] = {"Transport", "Books", "Tax", "Shopping", "Telephone", "Vehicles", "Students"};
+        int cs[] = {
+                R.color.primaryBlueDark
+                , R.color.primaryRoseDark
+                , R.color.primaryBlueLight
+                , R.color.primaryRoseLight
+                , R.color.colorPrimary
+                , R.color.colorAccent
+                , R.color.darkGray};
+        ArrayList<Integer> colors = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            colors.add(getResources().getColor(cs[i]));
+            legendEntries.add(new LegendEntry(names[i], Legend.LegendForm.SQUARE, Float.NaN, Float.NaN, null,
+                    getResources().getColor(cs[i])));
+        }
+        dataSet.setColors(colors);
+        chart.getLegend().setCustom(legendEntries);
+        chart.getLegend().setWordWrapEnabled(true);
+        chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        chart.animateY(2000, Easing.EaseInCubic);
+
+        chart.invalidate();
+    }
+
+    public void openRegisterActivity(View view) {
+        Intent intent = new Intent(this, Register.class);
+        startActivity(intent);
+    }
+
+    public void openTestActivity(View view) {
+        Intent intent = new Intent(this, TestActivity.class);
+        startActivity(intent);
     }
 
 

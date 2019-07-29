@@ -1,39 +1,36 @@
 package com.prabath.mywallet;
 
-import android.animation.Animator;
-import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.CycleInterpolator;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
+import com.prabath.mywallet.BroadcastReceivers.ConnectivityReceiver;
 import com.prabath.mywallet.Others.Init;
-
-import me.ibrahimsn.particle.ParticleView;
 
 public class SplashActivity extends AppCompatActivity {
 
-    ParticleView particleView;
     float dX, dY;
     float sX,sY;
+
+    ConnectivityReceiver connectivityReceiver;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        connectivityReceiver = new ConnectivityReceiver();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(connectivityReceiver, intentFilter);
 //        particleView=findViewById(R.id.particleView);
         final ImageView logo = findViewById(R.id.logo);
 
@@ -90,18 +87,14 @@ public class SplashActivity extends AppCompatActivity {
         logo.getLocationOnScreen(l);
 
         sX=l[0];
-        sY=l[1]-50;
+        sY = l[1];
     }
 
-    //    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        particleView.pause();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        particleView.pause();
-//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(connectivityReceiver);
+    }
+
 }

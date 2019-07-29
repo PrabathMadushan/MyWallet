@@ -54,10 +54,10 @@
         android:layout_width="68dp"
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Loading..."
-        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:textStyle="italic"
+        android:text="@string/loading"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

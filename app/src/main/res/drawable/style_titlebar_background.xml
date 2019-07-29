@@ -8,6 +8,6 @@
         <!--android:startColor="@color/primaryBlueDark"-->
         <!--android:endColor="@color/primaryBlueLight"-->
         <!--/>-->
-    <solid android:color="#DCFFFFFF"/>
+    <solid android:color="@android:color/transparent" />
     <padding android:left="1dp" android:right="1dp" android:top="10dp" android:bottom="10dp"/>
 </shape>

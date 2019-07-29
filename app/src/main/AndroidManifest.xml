@@ -18,49 +18,46 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".NoConnectionActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".TestActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize">
-
-
-        </activity>
+        <activity
+            android:name=".TestActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity
             android:name=".CategorySelectorActivity"
-            android:configChanges="screenLayout|orientation|screenSize">
-        </activity>
-        <activity android:name=".MapsActivity" android:label="@string/title_activity_maps"/>
+            android:configChanges="screenLayout|orientation|screenSize"></activity>
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".EditRecordActivity" />
-        <activity android:name=".AddNewRecordActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name=".AddNewRecordActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".AddNewAccountActivity" />
         <activity android:name=".AddNewCategoryActivity" />
         <activity android:name=".CategoriesActivity" />
         <activity android:name=".AccountsActivity" />
         <activity android:name=".IntroActivity" />
-        <activity android:name=".SplashActivity" >
-
-        </activity>
-        <activity
-            android:name=".Register"
-            android:windowSoftInputMode="stateHidden|adjustResize">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <activity
+            android:name=".Register"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="@string/app_name" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
