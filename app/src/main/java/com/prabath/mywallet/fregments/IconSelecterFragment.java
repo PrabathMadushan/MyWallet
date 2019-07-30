@@ -123,8 +123,8 @@ public class IconSelecterFragment extends Fragment {
         an.playOn(iconPreview);
     }
 
-    public String getSelectedIconId() {
-        return iconPreview.getTag().toString();
+    public int getSelectedIconId() {
+        return Integer.parseInt(iconPreview.getTag().toString());
     }
 
 }

@@ -3,21 +3,20 @@
     android:color="#ffffff">
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <solid android:color="@color/primaryBlueDark" />
+            <solid android:color="#BD0606" />
             <corners android:radius="5dp" />
         </shape>
     </item>
 
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-
             <size
                 android:width="100dp"
                 android:height="40dp" />
             <gradient
                 android:angle="45"
-                android:startColor="@color/primaryBlueDark"
-                android:endColor="@color/primaryBlueLight" />
+                android:startColor="#BD0606"
+                android:endColor="#FF5722" />
             <stroke
                 android:color="@android:color/white"
                 android:width="1dp" />

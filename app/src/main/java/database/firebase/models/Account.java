@@ -16,21 +16,23 @@ public class Account implements Serializable {
     public final static String FIELD_ICON = "icon";
     public final static String FIELD_DATE_TIME = "dateTime";
     public final static String FIELD_IS_DEFAULT = "defaultx";
+    public final static String FIELD_USER = "user";
 
 
     private final String id;
     private String name;
     private String des;
-    private String icon;
+    private int icon;
     private Date dateTime;
     private boolean defaultx;
+    private String user;
 
 
     public Account() {
         id = FirebaseController.genareteRandomKey();
     }
 
-    public Account(String name, String des, String icon, Date dateTime) {
+    public Account(String name, String des, int icon, Date dateTime) {
         this.name = name;
         this.des = des;
         this.icon = icon;
@@ -58,11 +60,11 @@ public class Account implements Serializable {
         this.des = des;
     }
 
-    public String getIcon() {
+    public int getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(int icon) {
         this.icon = icon;
     }
 
@@ -80,5 +82,13 @@ public class Account implements Serializable {
 
     public void setDefaultx(boolean defaultx) {
         this.defaultx = defaultx;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

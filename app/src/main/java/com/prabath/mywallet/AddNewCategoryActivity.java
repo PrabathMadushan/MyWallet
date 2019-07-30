@@ -11,24 +11,27 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.prabath.mywallet.Others.CategoryIcons;
 import com.prabath.mywallet.Others.DataValidater;
 import com.prabath.mywallet.fregments.IconSelecterFragment;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import database.local.LocalDatabaseController;
-import database.local.LocalDatabaseHelper;
-import database.local.models.Category;
-import database.local.models.CategoryType;
+import database.firebase.FirebaseController;
+import database.firebase.listeners.ReadCompleteListener;
+import database.firebase.models.Category;
+import database.firebase.models.CategoryType;
 
 public class AddNewCategoryActivity extends AppCompatActivity {
 
@@ -49,7 +52,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     private Button actionButton;
     private EditText name;
 
-    private LocalDatabaseController.TableCategory tableCategory;
+    private FirebaseController.CollectionCategories collectionCategories;
 
 
     @Override
@@ -62,7 +65,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         type = intent.getStringExtra(TYPE);
         if (type.equals(TYPE_EDIT)) {
             String id = intent.getStringExtra(CATEGORY_ID);
-            editCategory = loadCategory(id);
+            loadCategory(id);
             setupTitleLayoutEdit();
         } else {
             setupTitleLayoutAddNew();
@@ -83,9 +86,18 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         applyEntranceAnimation();
     }
 
-    private Category loadCategory(String id) {
-        List<Category> categories = tableCategory.get("id='" + id + "'");
-        return categories.get(0);
+    private void loadCategory(String id) {
+        collectionCategories.getById(id, new ReadCompleteListener<Category>() {
+            @Override
+            public void onReadComplete(ArrayList<Category> list) {
+                editCategory = list.get(0);
+            }
+        }, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                editCategory = null;
+            }
+        });
     }
 
     private void initComponents() {
@@ -97,8 +109,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         title.setAlpha(0);
         icon.setAlpha(0f);
         actionButton = findViewById(R.id.btnCancel);
-        tableCategory = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(getApplicationContext())).new TableCategory();
-
+        collectionCategories = FirebaseController.newInstance(FirebaseAuth.getInstance().getCurrentUser()).new CollectionCategories();
     }
 
     private void setupTitleLayoutAddNew() {
@@ -120,7 +131,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
             income.setChecked(true);
         }
         name.setText(editCategory.getName());
-        addFragment(CategoryIcons.getInstance().getIcon(Integer.parseInt(editCategory.getIcon())));
+        addFragment(CategoryIcons.getInstance().getIcon(editCategory.getIcon()));
     }
 
     private void applyEntranceAnimation() {
@@ -150,32 +161,49 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         }
     }
 
-    public void updateCategory(View view) {
+    public void updateCategory(final View view) {
         CategoryType type = getCategoryType();
         if (DataValidater.validateText(name) && type != null) {
             editCategory.setName(name.getText().toString());
             editCategory.setIcon(iconSelecterFragment.getSelectedIconId());
             editCategory.setType(type);
-            tableCategory.update(editCategory);
-            Toast.makeText(this, "Category Updated", Toast.LENGTH_SHORT).show();
-            gotoCategoryActivity(view);
+            collectionCategories.update(editCategory, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(AddNewCategoryActivity.this, "Category Updated", Toast.LENGTH_SHORT).show();
+                    gotoCategoryActivity(view);
+                }
+            }, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
         }
     }
 
-    public void saveCategory(View view) {
+    public void saveCategory(final View view) {
         CategoryType type = getCategoryType();
         if (DataValidater.validateText(name) && type != null) {
             Category category = new Category();
-            category.setId(LocalDatabaseController.genareteRandomKey());
             category.setName(name.getText().toString());
             category.setIcon(iconSelecterFragment.getSelectedIconId());
             Date today = new Date();
-            category.setDate(new SimpleDateFormat("yyyy:MM:dd").format(today));
-            category.setTime(new SimpleDateFormat("hh:mm:ss").format(today));
+            category.setDateTime(today);
             category.setType(type);
-            tableCategory.add(category);
-            Toast.makeText(this, "Category added", Toast.LENGTH_SHORT).show();
-            gotoCategoryActivity(view);
+            collectionCategories.add(category, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(AddNewCategoryActivity.this, "Category Added", Toast.LENGTH_SHORT).show();
+                    gotoCategoryActivity(view);
+                }
+            }, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(AddNewCategoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
             Toast.makeText(this, "Please fill data correctly", Toast.LENGTH_SHORT).show();
         }
@@ -190,7 +218,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         } else if (expense.isChecked()) {
             return CategoryType.EXPENSE;
         } else {
-            Toast.makeText(this, "Please select the category tykpe", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select the category type", Toast.LENGTH_SHORT).show();
             return null;
         }
     }

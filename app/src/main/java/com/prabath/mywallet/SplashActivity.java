@@ -2,8 +2,6 @@ package com.prabath.mywallet;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -13,7 +11,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.prabath.mywallet.BroadcastReceivers.ConnectivityReceiver;
+import com.google.firebase.auth.FirebaseAuth;
 import com.prabath.mywallet.Others.Init;
 
 public class SplashActivity extends AppCompatActivity {
@@ -21,31 +19,31 @@ public class SplashActivity extends AppCompatActivity {
     float dX, dY;
     float sX,sY;
 
-    ConnectivityReceiver connectivityReceiver;
-
+    private FirebaseAuth firebaseAuth;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        connectivityReceiver = new ConnectivityReceiver();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(connectivityReceiver, intentFilter);
 //        particleView=findViewById(R.id.particleView);
         final ImageView logo = findViewById(R.id.logo);
-
+        firebaseAuth = FirebaseAuth.getInstance();
 
 
         Init.getInstance(this).setup();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (firebaseAuth.getCurrentUser() != null) {
+                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(i);
+                }
 
-                Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(i);
             }
         }, 5000);
-
 
         logo.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -90,11 +88,5 @@ public class SplashActivity extends AppCompatActivity {
         sY = l[1];
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(connectivityReceiver);
-    }
 
 }

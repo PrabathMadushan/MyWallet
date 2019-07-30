@@ -16,11 +16,13 @@ public class Category implements Serializable {
     public final static String FIELD_TYPE = "type";
     public final static String FIELD_DATE = "dateTime";
     public final static String FIELD_DEFAULT = "defaultx";
+    public final static String FIELD_USER = "defaultx";
 
 
     private final String id;
     private String name;
-    private String icon;
+    private String user;
+    private int icon;
     private CategoryType type;
     private Date dateTime;
     private boolean defaultx = false;
@@ -29,7 +31,7 @@ public class Category implements Serializable {
         id = FirebaseController.genareteRandomKey();
     }
 
-    public Category(CategoryType type, String icon, String name, Date dateTime) {
+    public Category(CategoryType type, int icon, String name, Date dateTime) {
         this.name = name;
         this.icon = icon;
         this.type = type;
@@ -49,11 +51,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public String getIcon() {
+    public int getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(int icon) {
         this.icon = icon;
     }
 
@@ -79,6 +81,14 @@ public class Category implements Serializable {
 
     public void setDefaultx(boolean defaultx) {
         this.defaultx = defaultx;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }
 

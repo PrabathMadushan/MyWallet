@@ -144,7 +144,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
             account.setId(LocalDatabaseController.genareteRandomKey());
             account.setName(name.getText().toString());
             account.setDes(description.getText().toString());
-            account.setIcon(iconSelecterFragment.getSelectedIconId());
+            //account.setIcon(iconSelecterFragment.getSelectedIconId());
             account.setDefault(false);
             Date date=new Date();
             String today=new SimpleDateFormat("yyyy:MM:dd").format(date);
@@ -161,7 +161,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
             Account account = editAccount;
             account.setName(name.getText().toString());
             account.setDes(description.getText().toString());
-            account.setIcon(iconSelecterFragment.getSelectedIconId());
+            // account.setIcon(iconSelecterFragment.getSelectedIconId());
             tableAccount.update(account);
             back();
         }
