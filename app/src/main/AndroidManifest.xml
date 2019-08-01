@@ -11,15 +11,17 @@
         android:required="true" />
 
     <application
+        android:name=".MyWallet"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".MyWallet">
-
+        android:theme="@style/AppTheme">
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".ReportsActivity" />
+        <activity android:name=".BudgetsActivity" />
         <activity android:name=".NoConnectionActivity" />
 
         <meta-data
@@ -44,17 +46,18 @@
         <activity android:name=".AddNewCategoryActivity" />
         <activity android:name=".CategoriesActivity" />
         <activity android:name=".AccountsActivity" />
-        <activity android:name=".IntroActivity" />
+        <activity android:name=".AboutActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".RegisterActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".LoginActivity" />
         <activity

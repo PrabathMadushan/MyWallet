@@ -4,8 +4,6 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,8 +44,6 @@ public class AccountsActivity extends AppCompatActivity implements AccountISelec
 
     private void init() {
         initComponents();
-        setupTileLayout();
-        applyEntranceAnimation();
         setupRecycleView();
     }
 
@@ -73,25 +69,6 @@ public class AccountsActivity extends AppCompatActivity implements AccountISelec
         accountAdapter.notifyDataSetChanged();
     }
 
-
-    private void setupTileLayout() {
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText("Accounts");
-        ImageView icon = findViewById(R.id.titleIcon);
-        icon.setImageResource(R.drawable.ic_nui_categories);
-    }
-
-    private void applyEntranceAnimation() {
-        final TextView title = findViewById(R.id.titleText);
-        final ImageView icon = findViewById(R.id.titleIcon);
-        title.setAlpha(0);
-        YoYo.with(Techniques.Shake).duration(400).delay(200).onEnd(new YoYo.AnimatorCallback() {
-            @Override
-            public void call(Animator animator) {
-                YoYo.with(Techniques.FadeInRight).duration(200).playOn(title);
-            }
-        }).playOn(icon);
-    }
 
     public void gotoAddnewAccount(View view) {
         YoYo.with(Techniques.RubberBand).duration(500).onEnd(new YoYo.AnimatorCallback() {

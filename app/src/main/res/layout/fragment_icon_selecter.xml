@@ -25,7 +25,6 @@
         app:srcCompat="@drawable/db_exp_entertainment" />
 
     <ScrollView
-        android:id="@+id/scrollView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"

@@ -34,7 +34,6 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         db = FirebaseFirestore.getInstance();
-
     }
 
     public void readData(View view) {
@@ -49,7 +48,6 @@ public class TestActivity extends AppCompatActivity {
                         User user = documentSnapshot.toObject(User.class);
                         data += user.getEmail() + "/" + user.getDate().toString() + ",account:"
                                 + user.getAccount().getName();
-
                     }
                     txtData.setText(data);
                 } else {

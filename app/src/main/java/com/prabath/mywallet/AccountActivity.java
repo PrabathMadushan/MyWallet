@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prabath.mywallet.Listeners.RecordSelectListener;
 import com.prabath.mywallet.adapters.RecordAdapter;
-import com.prabath.mywallet.fregments.TitleFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +32,7 @@ public class AccountActivity extends AppCompatActivity implements RecordSelectLi
         init();
     }
     private void init(){
-        initTittleFragment();
         setupRecycleView();
-    }
-    private void initTittleFragment() {
-        TitleFragment titleFragment = TitleFragment.getInstance(R.drawable.db_inc_investments, "Account", this.getClass());
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragmentTitle, titleFragment);
-        transaction.commit();
     }
 
 

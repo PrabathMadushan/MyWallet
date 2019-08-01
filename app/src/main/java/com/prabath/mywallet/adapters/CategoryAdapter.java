@@ -1,9 +1,6 @@
 package com.prabath.mywallet.adapters;
 
 import android.animation.Animator;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,28 +16,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.prabath.mywallet.AddNewCategoryActivity;
+import com.prabath.mywallet.Listeners.SelectListener;
 import com.prabath.mywallet.Others.CategoryIcons;
 import com.prabath.mywallet.R;
-import com.prabath.mywallet.dialogs.MyDialog;
 
 import java.util.List;
 
-import database.local.LocalDatabaseController;
-import database.local.models.Category;
-import database.local.models.CategoryType;
+import database.firebase.models.Category;
+import database.firebase.models.CategoryType;
+
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
 
     private List<Category> categories;
-    private Context context;
-    private LocalDatabaseController.TableCategory tableCategory;
+    private SelectListener<Category> editListener;
+    private SelectListener<Category> deleteListener;
 
 
-    public CategoryAdapter(List<Category> categories, Context context, LocalDatabaseController.TableCategory tableCategory) {
+    public CategoryAdapter(List<Category> categories, SelectListener<Category> editListener, SelectListener<Category> deleteListener) {
         this.categories = categories;
-        this.context=context;
-        this.tableCategory=tableCategory;
+        this.editListener = editListener;
+        this.deleteListener = deleteListener;
     }
 
 
@@ -56,14 +52,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int i) {
         final Category category = categories.get(i);
-        if (category.isDefault()) {
+        if (category.isDefaultx()) {
             myViewHolder.edit.setEnabled(false);
             myViewHolder.delet.setEnabled(false);
             myViewHolder.edit.setAlpha(0.2f);
             myViewHolder.delet.setAlpha(0.2f);
             myViewHolder.edit.setBackgroundResource(R.drawable.style_button_desabled);
             myViewHolder.delet.setBackgroundResource(R.drawable.style_button_desabled);
-        }else{
+        } else {
             myViewHolder.edit.setEnabled(true);
             myViewHolder.delet.setEnabled(true);
             myViewHolder.edit.setAlpha(1f);
@@ -73,11 +69,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         }
         myViewHolder.name.setText(category.getName());
         myViewHolder.type.setText(category.getType().toString());
-        myViewHolder.icon.setImageResource(CategoryIcons.getInstance().getIcon(Integer.parseInt(category.getIcon())));
-        if (category.getType()== CategoryType.INCOME){
-            myViewHolder.icon.setColorFilter(ContextCompat.getColor(myViewHolder.root.getContext(),R.color.primaryBlueDark), PorterDuff.Mode.SRC_IN);
-        }else{
-            myViewHolder.icon.setColorFilter(ContextCompat.getColor(myViewHolder.root.getContext(),R.color.primaryRoseDark), PorterDuff.Mode.SRC_IN);
+        myViewHolder.icon.setImageResource(CategoryIcons.getInstance().getIcon(category.getIcon()));
+        if (category.getType() == CategoryType.INCOME) {
+            myViewHolder.icon.setColorFilter(ContextCompat.getColor(myViewHolder.root.getContext(), R.color.primaryBlueDark), PorterDuff.Mode.SRC_IN);
+        } else {
+            myViewHolder.icon.setColorFilter(ContextCompat.getColor(myViewHolder.root.getContext(), R.color.primaryRoseDark), PorterDuff.Mode.SRC_IN);
 
         }
         if (i > lastPosition) {
@@ -87,32 +83,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         myViewHolder.delet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case MyDialog.RESULT_YES:
-                                tableCategory.remove(categories.get(i));
-                                categories.remove(i);
-                                notifyItemRemoved(i);
-                                notifyItemRangeChanged(i, categories.size());
-                                break;
-                            case MyDialog.RESULT_NO:
-                                break;
-                        }
-                    }
-                };
                 YoYo.with(Techniques.ZoomIn).duration(200).onEnd(new YoYo.AnimatorCallback() {
                     @Override
                     public void call(Animator animator) {
-                        new MyDialog(
-                                myViewHolder.root.getContext(),
-                                "Delete",
-                                "Do you want to delete this category item?",
-                                MyDialog.TYPE_QUESTION,listener
-                        ).show();
-
-
+                        deleteListener.select(i, category);
                     }
                 }).playOn(v);
             }
@@ -124,10 +98,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
                 YoYo.with(Techniques.ZoomIn).duration(200).onEnd(new YoYo.AnimatorCallback() {
                     @Override
                     public void call(Animator animator) {
-                        Intent intent=new Intent(context, AddNewCategoryActivity.class);
-                        intent.putExtra(AddNewCategoryActivity.TYPE,AddNewCategoryActivity.TYPE_EDIT);
-                        intent.putExtra(AddNewCategoryActivity.CATEGORY_ID,category.getId());
-                        context.startActivity(intent);
+                        editListener.select(i, category);
                     }
                 }).playOn(v);
             }
@@ -149,7 +120,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         public ConstraintLayout root;
         public ImageButton edit;
         public ImageButton delet;
-
 
 
         public MyViewHolder(@NonNull View itemView) {

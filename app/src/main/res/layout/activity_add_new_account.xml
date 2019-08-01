@@ -6,22 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".AddNewAccountActivity">
 
-    <include
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/include4"
-        layout="@layout/layout_page_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="@string/add_new_account"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -45,16 +60,13 @@
 
     <EditText
         android:id="@+id/txtName"
-        android:layout_width="327dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:background="@drawable/style_textbox_normal"
         android:ems="10"
-        android:text="Bank Account"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,27 +115,23 @@
         android:id="@+id/btnCancel"
         android:layout_width="115dp"
         android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/style_button_rose"
         android:drawableLeft="@drawable/ic_nui_cancel"
         android:drawableTint="@android:color/white"
-        android:onClick="doAction"
+        android:onClick="cancel"
         android:text="@android:string/cancel"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/btnAction"
-        app:layout_constraintEnd_toStartOf="@+id/btnAction"
-        app:layout_constraintHorizontal_bias="0.863"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnAction"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/btnAction" />
 
     <Button
         android:id="@+id/btnAction"
         android:layout_width="115dp"
         android:layout_height="32dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/style_button_blue"
         android:drawableLeft="@drawable/ic_nui_add"

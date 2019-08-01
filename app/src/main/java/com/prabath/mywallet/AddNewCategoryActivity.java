@@ -1,14 +1,11 @@
 package com.prabath.mywallet;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,11 +20,9 @@ import com.prabath.mywallet.Others.CategoryIcons;
 import com.prabath.mywallet.Others.DataValidater;
 import com.prabath.mywallet.fregments.IconSelecterFragment;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-import database.firebase.FirebaseController;
-import database.firebase.listeners.ReadCompleteListener;
+import database.firebase.firestore.FirestoreController;
 import database.firebase.models.Category;
 import database.firebase.models.CategoryType;
 
@@ -47,12 +40,10 @@ public class AddNewCategoryActivity extends AppCompatActivity {
 
     private RadioButton income;
     private RadioButton expense;
-    private TextView title;
-    private ImageView icon;
     private Button actionButton;
     private EditText name;
 
-    private FirebaseController.CollectionCategories collectionCategories;
+    private FirestoreController.CollectionCategories collectionCategories;
 
 
     @Override
@@ -66,7 +57,6 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         if (type.equals(TYPE_EDIT)) {
             String id = intent.getStringExtra(CATEGORY_ID);
             loadCategory(id);
-            setupTitleLayoutEdit();
         } else {
             setupTitleLayoutAddNew();
         }
@@ -83,47 +73,32 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        applyEntranceAnimation();
     }
 
     private void loadCategory(String id) {
-        collectionCategories.getById(id, new ReadCompleteListener<Category>() {
-            @Override
-            public void onReadComplete(ArrayList<Category> list) {
-                editCategory = list.get(0);
-            }
-        }, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                editCategory = null;
-            }
-        });
+        collectionCategories.getById(id, list -> {
+            editCategory = list.get(0);
+            setupTitleLayoutEdit();
+        }).addOnFailureListener(e -> editCategory = null);
     }
 
     private void initComponents() {
-        title = findViewById(R.id.titleText);
-        icon = findViewById(R.id.titleIcon);
+
         name = findViewById(R.id.txtName);
         expense = findViewById(R.id.rdbExpence);
         income = findViewById(R.id.rdbIncome);
-        title.setAlpha(0);
-        icon.setAlpha(0f);
+
         actionButton = findViewById(R.id.btnCancel);
-        collectionCategories = FirebaseController.newInstance(FirebaseAuth.getInstance().getCurrentUser()).new CollectionCategories();
+        collectionCategories = FirestoreController.newInstance(FirebaseAuth.getInstance().getCurrentUser()).new CollectionCategories();
     }
 
     private void setupTitleLayoutAddNew() {
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText("New Category");
-        icon.setImageResource(R.drawable.ic_nui_add);
+
         actionButton.setText("ADD");
         addFragment(CategoryIcons.getInstance().getIcon(0));
     }
 
     private void setupTitleLayoutEdit() {
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText("Edit Category");
-        icon.setImageResource(R.drawable.ic_nui_edit);
         actionButton.setText("UPDATE");
         if (editCategory.getType().equals(CategoryType.EXPENSE)) {
             expense.setChecked(true);
@@ -134,17 +109,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         addFragment(CategoryIcons.getInstance().getIcon(editCategory.getIcon()));
     }
 
-    private void applyEntranceAnimation() {
-        final TextView title = findViewById(R.id.titleText);
-        final ImageView icon = findViewById(R.id.titleIcon);
-        title.setAlpha(0);
-        YoYo.with(Techniques.Shake).duration(400).delay(200).onEnd(new YoYo.AnimatorCallback() {
-            @Override
-            public void call(Animator animator) {
-                YoYo.with(Techniques.FadeInRight).duration(200).playOn(title);
-            }
-        }).playOn(icon);
-    }
+
 
 
     public void gotoCategoryActivity(View view) {
@@ -167,13 +132,13 @@ public class AddNewCategoryActivity extends AppCompatActivity {
             editCategory.setName(name.getText().toString());
             editCategory.setIcon(iconSelecterFragment.getSelectedIconId());
             editCategory.setType(type);
-            collectionCategories.update(editCategory, new OnSuccessListener<Void>() {
+            collectionCategories.update(editCategory).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(AddNewCategoryActivity.this, "Category Updated", Toast.LENGTH_SHORT).show();
                     gotoCategoryActivity(view);
                 }
-            }, new OnFailureListener() {
+            }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
 
@@ -192,13 +157,13 @@ public class AddNewCategoryActivity extends AppCompatActivity {
             Date today = new Date();
             category.setDateTime(today);
             category.setType(type);
-            collectionCategories.add(category, new OnSuccessListener<Void>() {
+            collectionCategories.add(category).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(AddNewCategoryActivity.this, "Category Added", Toast.LENGTH_SHORT).show();
                     gotoCategoryActivity(view);
                 }
-            }, new OnFailureListener() {
+            }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(AddNewCategoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();

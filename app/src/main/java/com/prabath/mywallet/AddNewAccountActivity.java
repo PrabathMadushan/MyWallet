@@ -1,21 +1,17 @@
 package com.prabath.mywallet;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.prabath.mywallet.Others.AccountIcons;
 import com.prabath.mywallet.Others.DataValidater;
 import com.prabath.mywallet.fregments.IconSelecterFragment;
@@ -62,8 +58,6 @@ public class AddNewAccountActivity extends AppCompatActivity {
         } else {
             setupForAddNew();
         }
-        applyEntranceAnimation();
-
     }
 
     private void initComponents() {
@@ -75,11 +69,6 @@ public class AddNewAccountActivity extends AppCompatActivity {
 
     private void setupForAddNew() {
         ((TextView)findViewById(R.id.btnAction)).setText("ADD");
-
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText("New Account");
-        ImageView icon = findViewById(R.id.titleIcon);
-        icon.setImageResource(R.drawable.ic_nui_add);
         addFragment();
     }
 
@@ -91,10 +80,6 @@ public class AddNewAccountActivity extends AppCompatActivity {
         action.setCompoundDrawables( img, null, null, null );
         List<Account> account = tableAccount.get(Account.FIELD_ID + "='" + accountid + "'");
         editAccount = account.get(0);
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText("Edit Account");
-        ImageView icon = findViewById(R.id.titleIcon);
-        icon.setImageResource(R.drawable.ic_nui_edit);
         name.setText(editAccount.getName());
         description.setText(editAccount.getDes());
         addFragment();
@@ -111,17 +96,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
     }
 
 
-    private void applyEntranceAnimation() {
-        final TextView title = findViewById(R.id.titleText);
-        final ImageView icon = findViewById(R.id.titleIcon);
-        title.setAlpha(0);
-        YoYo.with(Techniques.Shake).duration(400).delay(200).onEnd(new YoYo.AnimatorCallback() {
-            @Override
-            public void call(Animator animator) {
-                YoYo.with(Techniques.FadeInRight).duration(200).playOn(title);
-            }
-        }).playOn(icon);
-    }
+
 
     public void doAction(View view) {
         if (type.equals(TYPE_NEW)) {
@@ -137,6 +112,10 @@ public class AddNewAccountActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void cancel(View view) {
+        back();
+    }
+
     private void saveAccount() {
 
         if(DataValidater.validateText(name)){
@@ -144,7 +123,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
             account.setId(LocalDatabaseController.genareteRandomKey());
             account.setName(name.getText().toString());
             account.setDes(description.getText().toString());
-            //account.setIcon(iconSelecterFragment.getSelectedIconId());
+            account.setIcon(iconSelecterFragment.getSelectedIconId() + "");
             account.setDefault(false);
             Date date=new Date();
             String today=new SimpleDateFormat("yyyy:MM:dd").format(date);

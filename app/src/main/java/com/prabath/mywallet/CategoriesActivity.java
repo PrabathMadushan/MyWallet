@@ -1,11 +1,10 @@
 package com.prabath.mywallet;
 
 import android.animation.Animator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,26 +12,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.prabath.mywallet.Listeners.SelectListener;
 import com.prabath.mywallet.adapters.CategoryAdapter;
+import com.prabath.mywallet.dialogs.MyDialog;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import database.local.LocalDatabaseController;
-import database.local.LocalDatabaseHelper;
-import database.local.models.Category;
+import database.firebase.firestore.FirestoreController;
+import database.firebase.models.Category;
+
 
 public class CategoriesActivity extends AppCompatActivity {
 
-    private LocalDatabaseController.TableCategory tableCategory;
+    private FirestoreController.CollectionCategories collectionCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
-
-        setupTileLayout();
         setupRecycleView();
     }
 
@@ -48,52 +47,68 @@ public class CategoriesActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         //recyclerView.setItemAnimator(new DefaultItemAnimator());
-        tableCategory=LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(getApplicationContext())).new TableCategory();
-        categoryAdapter = new CategoryAdapter(categories,getApplicationContext(),tableCategory);
+        collectionCategories = FirestoreController.newInstance(null).new CollectionCategories();
+        categoryAdapter = new CategoryAdapter(categories, getEditListener(), getDeleteListener());
         recyclerView.setAdapter(categoryAdapter);
         showCategories();
     }
 
+    private SelectListener<Category> getEditListener() {
+        return (index, category) -> {
+            Intent intent = new Intent(CategoriesActivity.this, AddNewCategoryActivity.class);
+            intent.putExtra(AddNewCategoryActivity.TYPE, AddNewCategoryActivity.TYPE_EDIT);
+            intent.putExtra(AddNewCategoryActivity.CATEGORY_ID, category.getId());
+            startActivity(intent);
+        };
+    }
+
+    private SelectListener<Category> getDeleteListener() {
+        return (index, category) -> {
+            final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case MyDialog.RESULT_YES:
+                            collectionCategories.remove(category).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    categories.remove(index);
+                                    categoryAdapter.notifyItemRemoved(index);
+                                    categoryAdapter.notifyItemRangeChanged(index, categories.size());
+                                }
+                            });
+                            break;
+                        case MyDialog.RESULT_NO:
+                            break;
+                    }
+                }
+            };
+
+            new MyDialog(
+                    CategoriesActivity.this,
+                    "Delete",
+                    "Do you want to delete this category item?",
+                    MyDialog.TYPE_QUESTION, listener
+            ).show();
+
+        };
+    }
+
     private void showCategories() {
-        List<Category> cs = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(getApplicationContext())).new TableCategory().get(null);
-        Collections.reverse(cs);
-        categories.addAll(cs);
-        categoryAdapter.notifyDataSetChanged();
+        collectionCategories.getAll(list -> {
+            categories.addAll(list);
+            categoryAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+
+        });
     }
-
-
-    private void setupTileLayout() {
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText("Categories");
-        ImageView icon = findViewById(R.id.titleIcon);
-        icon.setImageResource(R.drawable.ic_nui_categories);
-    }
-
-    private void applyEntranceAnimation() {
-        final TextView title = findViewById(R.id.titleText);
-        final ImageView icon = findViewById(R.id.titleIcon);
-        title.setAlpha(0);
-        YoYo.with(Techniques.Shake).duration(400).delay(200).onEnd(new YoYo.AnimatorCallback() {
-            @Override
-            public void call(Animator animator) {
-                YoYo.with(Techniques.FadeInRight).duration(200).playOn(title);
-            }
-        }).playOn(icon);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        applyEntranceAnimation();
-    }
-
 
     public void gotoAddCategory(View view) {
         YoYo.with(Techniques.RubberBand).duration(500).onEnd(new YoYo.AnimatorCallback() {
             @Override
             public void call(Animator animator) {
                 Intent intent = new Intent(CategoriesActivity.this, AddNewCategoryActivity.class);
-                intent.putExtra(AddNewCategoryActivity.TYPE,AddNewCategoryActivity.TYPE_NEW);
+                intent.putExtra(AddNewCategoryActivity.TYPE, AddNewCategoryActivity.TYPE_NEW);
                 startActivity(intent);
             }
         }).playOn(view);
@@ -103,8 +118,44 @@ public class CategoriesActivity extends AppCompatActivity {
         YoYo.with(Techniques.RubberBand).duration(500).onEnd(new YoYo.AnimatorCallback() {
             @Override
             public void call(Animator animator) {
-                startActivity(new Intent(CategoriesActivity.this,MainActivity.class));
+                startActivity(new Intent(CategoriesActivity.this, MainActivity.class));
             }
         }).playOn(view);
     }
+
+
+    /*
+    *
+    final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case MyDialog.RESULT_YES:
+                                tableCategory.remove(categories.get(i));
+                                categories.remove(i);
+                                notifyItemRemoved(i);
+                                notifyItemRangeChanged(i, categories.size());
+                                break;
+                            case MyDialog.RESULT_NO:
+                                break;
+                        }
+                    }
+                };
+
+                 new MyDialog(
+                                myViewHolder.root.getContext(),
+                                "Delete",
+                                "Do you want to delete this category item?",
+                                MyDialog.TYPE_QUESTION, listener
+                        ).show();
+
+
+                        Intent intent = new Intent(context, AddNewCategoryActivity.class);
+                        intent.putExtra(AddNewCategoryActivity.TYPE, AddNewCategoryActivity.TYPE_EDIT);
+                        intent.putExtra(AddNewCategoryActivity.CATEGORY_ID, category.getId());
+                        context.startActivity(intent);
+    *
+    *
+    *
+    * */
 }

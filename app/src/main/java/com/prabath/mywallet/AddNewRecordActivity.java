@@ -30,7 +30,6 @@ import com.prabath.mywallet.Others.CategoryIcons;
 import com.prabath.mywallet.fregments.AddLocationFragment;
 import com.prabath.mywallet.fregments.AddPhotoFragment;
 import com.prabath.mywallet.fregments.AddRouteFragment;
-import com.prabath.mywallet.fregments.TitleFragment;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -64,15 +63,8 @@ public class AddNewRecordActivity extends AppCompatActivity {
         initNumberPadComponents();
         init();
         enterTransition();
-        initTittleFragment();
     }
 
-    private void initTittleFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.titleFragment, TitleFragment.getInstance(R.drawable.db_acc_contract, "Add New Record", CategorySelectorActivity.class));
-        transaction.commit();
-    }
 
     private void enterTransition() {
         Record record = (Record) getIntent().getSerializableExtra(AccountActivity.EXTRA_RECORD);

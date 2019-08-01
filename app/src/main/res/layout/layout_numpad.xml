@@ -89,7 +89,6 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/btn7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -97,7 +96,6 @@
                 android:text="@string/_7" />
 
             <Button
-                android:id="@+id/btn8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -105,7 +103,6 @@
                 android:text="@string/_8" />
 
             <Button
-                android:id="@+id/btn9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -129,7 +126,6 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/btn4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -137,7 +133,6 @@
                 android:text="@string/_4" />
 
             <Button
-                android:id="@+id/btn5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -145,7 +140,6 @@
                 android:text="@string/_5" />
 
             <Button
-                android:id="@+id/btn6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -171,7 +165,6 @@
             >
 
             <Button
-                android:id="@+id/btn1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -179,7 +172,6 @@
                 android:text="@string/_1" />
 
             <Button
-                android:id="@+id/btn2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -187,7 +179,6 @@
                 android:text="@string/_2" />
 
             <Button
-                android:id="@+id/btn3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -195,7 +186,6 @@
                 android:text="@string/_3" />
 
             <Button
-                android:id="@+id/btnminaus"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -209,7 +199,6 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/btnc"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -217,7 +206,6 @@
                 android:text="@string/fpoint" />
 
             <Button
-                android:id="@+id/btn0"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"
@@ -225,7 +213,6 @@
                 android:text="@string/_0" />
 
             <ImageButton
-                android:id="@+id/btndelete"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/style_back_calc_cell_hover_hover"

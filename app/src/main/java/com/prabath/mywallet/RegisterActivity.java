@@ -11,16 +11,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.prabath.mywallet.Others.DataValidater;
 import com.yalantis.ucrop.UCrop;
@@ -30,16 +24,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
-public class Register extends AppCompatActivity {
+import database.firebase.auth.AuthController;
+import database.firebase.firestore.FirestoreController;
+import database.firebase.models.User;
+import database.firebase.storage.StorageController;
+
+public class RegisterActivity extends AppCompatActivity {
 
     private CircularImageView imageView;
     private EditText email;
     private EditText password;
     private EditText passwordAgain;
     private EditText contact;
+    private EditText username;
 
-    private FirebaseAuth auth;
+    private AuthController auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +55,17 @@ public class Register extends AppCompatActivity {
     }
 
     private void init() {
-        auth = FirebaseAuth.getInstance();
+        auth = AuthController.getInstance();
         imageView = findViewById(R.id.user_image);
         email = findViewById(R.id.txtEmail);
         password = findViewById(R.id.txtPassword);
         passwordAgain = findViewById(R.id.txtPasswordAgain);
         contact = findViewById(R.id.txtContact);
+        username = findViewById(R.id.txtUsername);
     }
 
     public void registerButtonClick(View view) {
-        if (auth.getCurrentUser() != null) {
+        if (auth.getAuth().getCurrentUser() != null) {
             Toast.makeText(this, "Registered", Toast.LENGTH_SHORT).show();
         } else {
             register();
@@ -72,25 +74,51 @@ public class Register extends AppCompatActivity {
 
     private void register() {
         if (
-                DataValidater.validateText(email)
+                DataValidater.validateText(username)
+                        & DataValidater.validateText(email)
                         & DataValidater.validatePassword(password, passwordAgain)
                         & DataValidater.validateText(contact)
         ) {
-            auth.createUserWithEmailAndPassword(
+            User user = new User();
+            user.setEmail(email.getText().toString());
+            user.setPassword(password.getText().toString());
+            user.setContact(contact.getText().toString());
+            user.setDateTime(new Date());
+            user.setUsername(username.getText().toString());
+            auth.registerWithEmailAndPassword(
                     email.getText().toString(),
-                    password.getText().toString()
-            ).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    Toast.makeText(Register.this, "Registration Complete", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(this, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                    password.getText().toString())
+                    .addOnSuccessListener(this, t -> {
+                        Toast.makeText(RegisterActivity.this, "Registration Complete", Toast.LENGTH_SHORT).show();
+                        if (selectedPhotoUri != null) {
+                            StorageController.getInstance().uploadProfilePhoto(user, selectedPhotoUri)
+                                    .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show())
+                                    .addOnSuccessListener(t1 -> {
+                                        Uri uploadSessionUri = t1.getUploadSessionUri();
+                                        user.setImage(uploadSessionUri.toString());
+                                        FirestoreController.newInstance(null).new CollectionUsers().add(user)
+                                                .addOnSuccessListener(v -> {
+                                                    Toast.makeText(this, "User saved", Toast.LENGTH_SHORT).show();
+                                                    gotoPlash();
+                                                })
+                                                .addOnFailureListener(f -> Toast.makeText(this, f.getMessage(), Toast.LENGTH_SHORT).show());
+                                    });
+                        } else {
+                            user.setImage(null);
+                            FirestoreController.newInstance(null).new CollectionUsers().add(user)
+                                    .addOnSuccessListener(v -> {
+                                        Toast.makeText(this, "User saved", Toast.LENGTH_SHORT).show();
+                                        gotoPlash();
+                                    })
+                                    .addOnFailureListener(f -> Toast.makeText(this, f.getMessage(), Toast.LENGTH_SHORT).show());
+                        }
+                    }).addOnFailureListener(this, e -> Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
         }
+    }
+
+    private void gotoPlash() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        startActivity(intent);
     }
 
 
@@ -112,13 +140,10 @@ public class Register extends AppCompatActivity {
     }
 
     public void dispatchOpenPictureIntent(View view) {
-        YoYo.with(Techniques.RubberBand).duration(200).onEnd(new YoYo.AnimatorCallback() {
-            @Override
-            public void call(Animator animator) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
-            }
+        YoYo.with(Techniques.RubberBand).duration(200).onEnd(animator -> {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
         }).playOn(view);
 
     }
@@ -127,6 +152,8 @@ public class Register extends AppCompatActivity {
         UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), "crop_image.jpg"))).start(this);
 
     }
+
+    private Uri selectedPhotoUri;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,21 +178,16 @@ public class Register extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //imageView.setImageBitmap(imageBitmap);
         } else if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK) {
             final Uri imageUri = data.getData();
             startCropImage(imageUri);
-//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//                imageView.setImageBitmap(selectedImage);
-
         } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
             try {
                 Uri output = UCrop.getOutput(data);
+                selectedPhotoUri = output;
                 final InputStream imageStream = getContentResolver().openInputStream(output);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageView.setImageBitmap(selectedImage);
-
             } catch (FileNotFoundException ex) {
 
             }

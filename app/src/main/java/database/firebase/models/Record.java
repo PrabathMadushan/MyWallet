@@ -4,7 +4,7 @@ package database.firebase.models;
 import java.io.Serializable;
 import java.sql.Date;
 
-import database.firebase.FirebaseController;
+import database.firebase.firestore.FirestoreController;
 
 public class Record implements Serializable {
 
@@ -29,7 +29,7 @@ public class Record implements Serializable {
     private Date dateTime;
 
     public Record() {
-        id = FirebaseController.genareteRandomKey();
+        id = FirestoreController.genareteRandomKey();
     }
 
     public Record(float value, Category category, Account account, GLocation location, String image, String description, Date dateTime) {
@@ -40,7 +40,7 @@ public class Record implements Serializable {
         this.image = image;
         this.description = description;
         this.dateTime = dateTime;
-        id = FirebaseController.genareteRandomKey();
+        id = FirestoreController.genareteRandomKey();
     }
 
     public String getId() {

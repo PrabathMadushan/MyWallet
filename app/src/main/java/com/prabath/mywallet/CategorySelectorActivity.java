@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,17 +15,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.prabath.mywallet.adapters.AccountAdapter;
-import com.prabath.mywallet.adapters.CategoryItemAdapter;
 import com.prabath.mywallet.Listeners.CategorySelectListener;
-import com.prabath.mywallet.fregments.TitleFragment;
+import com.prabath.mywallet.adapters.CategoryItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,21 +47,12 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
         setupRecycleView();
     }
 
-    private void initTittleFragment() {
-        TitleFragment titleFragment = TitleFragment.getInstance(R.drawable.db_inc_salary, "Select Category", AccountActivity.class);
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragmentTitle, titleFragment);
-        transaction.commit();
-    }
-
     private RecyclerView recyclerView;
     private CategoryItemAdapter adapter;
     private ArrayList<Category> categories;
 
 
     private void init() {
-        initTittleFragment();
         tableCategory = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableCategory();
         final Button income = findViewById(R.id.btnIncome);
         final Button expense = findViewById(R.id.btnExpense);

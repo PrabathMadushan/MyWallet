@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -22,8 +21,6 @@ import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +30,7 @@ import com.prabath.mywallet.Others.CategoryIcons;
 import java.util.ArrayList;
 import java.util.Date;
 
-import database.firebase.FirebaseController;
+import database.firebase.firestore.FirestoreController;
 import database.firebase.models.Account;
 import database.firebase.models.Category;
 import database.firebase.models.CategoryType;
@@ -41,12 +38,12 @@ import database.firebase.models.CategoryType;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,10 +54,12 @@ public class MainActivity extends AppCompatActivity
 
         //Testing
         drawChart();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        TextView userEmail = findViewById(R.id.txtUserEmail);
-        userEmail.setText(currentUser.getEmail());
-        FirebaseAuth.getInstance().signOut();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            TextView userEmail = findViewById(R.id.txtUserEmail);
+            userEmail.setText(currentUser.getPhotoUrl() + "");
+
+        }
     }
 
 
@@ -76,16 +75,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -113,10 +109,17 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_budget) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_reports) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_about) {
 
+        } else if (id == R.id.nav_settings) {
+
+        } else if (id == R.id.nav_logout) {
+            if (currentUser != null)
+                FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -181,7 +184,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void openRegisterActivity(View view) {
-        Intent intent = new Intent(this, Register.class);
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
@@ -286,17 +289,9 @@ public class MainActivity extends AppCompatActivity
             category.setDefaultx(true);
             category.setUser(null);
             final int progress = ru * i;
-            FirebaseController.newInstance(null).new CollectionCategories().add(category, new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    progressBar.setProgress(progress);
-                }
-            }, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            FirestoreController.newInstance(null).new CollectionCategories().add(category)
+                    .addOnSuccessListener(a -> progressBar.setProgress(progress))
+                    .addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
         }
         for (int i = 0; i < icons_expense.length; i++) {
             Category category = new Category();
@@ -307,18 +302,9 @@ public class MainActivity extends AppCompatActivity
             category.setDefaultx(true);
             category.setDefaultx(true);
             final int progress = (ru * i) + ru * icons_income.length;
-            FirebaseController.newInstance(null).new CollectionCategories().add(category, new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    progressBar.setProgress(progress);
-                }
-            }, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
-            });
+            FirestoreController.newInstance(null).new CollectionCategories().add(category)
+                    .addOnSuccessListener(a -> progressBar.setProgress(progress))
+                    .addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
         }
 
 
@@ -349,17 +335,10 @@ public class MainActivity extends AppCompatActivity
             account.setIcon(iconsGeter.getId(icons[i]));
             account.setDateTime(date);
             account.setDefaultx(true);
-            FirebaseController.newInstance(null).new CollectionAccounts().add(account, new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(MainActivity.this, "add account", Toast.LENGTH_SHORT).show();
-                }
-            }, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            FirestoreController.newInstance(null).new CollectionAccounts().add(account)
+                    .addOnSuccessListener(a -> Toast.makeText(MainActivity.this, "add account", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+
         }
     }
 

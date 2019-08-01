@@ -1,37 +1,43 @@
 package database.firebase.models;
 
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
 
-public class User {
+import database.firebase.firestore.FirestoreController;
+
+
+public class User implements Serializable {
+
+    public static final String COLLECTION = "USERS";
+
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_USERNAME = "username";
+    public static final String FIELD_EMAIL = "email";
+    public static final String FIELD_PASSWORD = "password";
+    public static final String FIELD_IMAGE = "image";
+    public static final String FIELD_CONTACT = "contact";
+    public static final String FIELD_DATETIME = "dateTime";
     private String id;
     private String username;
     private String email;
     private String password;
     private String image;
     private String contact;
-    private Date date;
-    private String time;
-    private Account account;
+    private Date dateTime;
 
     public User() {
+        id = FirestoreController.genareteRandomKey();
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     public String getId() {
         return id;
@@ -81,13 +87,6 @@ public class User {
         this.contact = contact;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 
     @Override
     public String toString() {
