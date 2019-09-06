@@ -55,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void init() {
-        auth = AuthController.getInstance();
+        auth = AuthController.newInstance();
         imageView = findViewById(R.id.user_image);
         email = findViewById(R.id.txtEmail);
         password = findViewById(R.id.txtPassword);
@@ -96,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     .addOnSuccessListener(t1 -> {
                                         Uri uploadSessionUri = t1.getUploadSessionUri();
                                         user.setImage(uploadSessionUri.toString());
-                                        FirestoreController.newInstance(null).new CollectionUsers().add(user)
+                                        FirestoreController.newInstance().new CollectionUsers().add(user)
                                                 .addOnSuccessListener(v -> {
                                                     Toast.makeText(this, "User saved", Toast.LENGTH_SHORT).show();
                                                     gotoPlash();
@@ -105,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     });
                         } else {
                             user.setImage(null);
-                            FirestoreController.newInstance(null).new CollectionUsers().add(user)
+                            FirestoreController.newInstance().new CollectionUsers().add(user)
                                     .addOnSuccessListener(v -> {
                                         Toast.makeText(this, "User saved", Toast.LENGTH_SHORT).show();
                                         gotoPlash();

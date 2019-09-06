@@ -8,4 +8,10 @@ public class Commons {
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(amount);
     }
+
+    public static float formatedCurrencyToFloat(String value) {
+        String newValue = value.replace(',', ' ').trim();
+        float v = Float.parseFloat(newValue);
+        return v;
+    }
 }

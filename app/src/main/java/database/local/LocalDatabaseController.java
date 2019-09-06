@@ -22,7 +22,8 @@ public class LocalDatabaseController {
 
 
     private LocalDatabaseController(LocalDatabaseHelper helper) {
-         database = helper.getWritableDatabase();
+
+        this.database = helper.getWritableDatabase();
     }
 
     public static LocalDatabaseController getInstance(LocalDatabaseHelper helper) {

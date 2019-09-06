@@ -12,14 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -143,9 +139,11 @@ public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION)) {
             @SuppressLint("MissingPermission")
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            lat = location.getLatitude();
-            lng = location.getLongitude();
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (location != null) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+            }
         } else {
             AppPermissions.newInstance().request(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION,

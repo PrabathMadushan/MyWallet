@@ -68,12 +68,9 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
                 expense.setBackgroundResource(R.drawable.style_flat_button_rose_not_selected);
 
 
-                YoYo.with(Techniques.FadeOutRight).onEnd(new YoYo.AnimatorCallback() {
-                    @Override
-                    public void call(Animator animator) {
-                        showCatIncomes();
-                        YoYo.with(Techniques.FadeInLeft).duration(200).playOn(wraper);
-                    }
+                YoYo.with(Techniques.FadeOutRight).onEnd(animator -> {
+                    showCatIncomes();
+                    YoYo.with(Techniques.FadeInLeft).duration(200).playOn(wraper);
                 }).duration(200).playOn(wraper);
             }
         });

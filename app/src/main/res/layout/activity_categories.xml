@@ -42,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:id="@+id/include2"
+            android:background="@drawable/style_list_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

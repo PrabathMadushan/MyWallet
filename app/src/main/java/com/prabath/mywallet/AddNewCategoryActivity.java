@@ -15,13 +15,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.prabath.mywallet.Others.CategoryIcons;
 import com.prabath.mywallet.Others.DataValidater;
 import com.prabath.mywallet.fregments.IconSelecterFragment;
 
 import java.util.Date;
 
+import database.firebase.auth.AuthController;
 import database.firebase.firestore.FirestoreController;
 import database.firebase.models.Category;
 import database.firebase.models.CategoryType;
@@ -50,7 +50,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_category);
-        //icons = CategoryIcons.getInstance();
+        //icons = CategoryIcons.newInstance();
         initComponents();
         Intent intent = getIntent();
         type = intent.getStringExtra(TYPE);
@@ -58,7 +58,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
             String id = intent.getStringExtra(CATEGORY_ID);
             loadCategory(id);
         } else {
-            setupTitleLayoutAddNew();
+            setupLayoutAddNew();
         }
     }
 
@@ -78,7 +78,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
     private void loadCategory(String id) {
         collectionCategories.getById(id, list -> {
             editCategory = list.get(0);
-            setupTitleLayoutEdit();
+            setupLayoutEdit();
         }).addOnFailureListener(e -> editCategory = null);
     }
 
@@ -89,16 +89,16 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         income = findViewById(R.id.rdbIncome);
 
         actionButton = findViewById(R.id.btnCancel);
-        collectionCategories = FirestoreController.newInstance(FirebaseAuth.getInstance().getCurrentUser()).new CollectionCategories();
+        collectionCategories = FirestoreController.newInstance().new CollectionCategories();
     }
 
-    private void setupTitleLayoutAddNew() {
+    private void setupLayoutAddNew() {
 
         actionButton.setText("ADD");
         addFragment(CategoryIcons.getInstance().getIcon(0));
     }
 
-    private void setupTitleLayoutEdit() {
+    private void setupLayoutEdit() {
         actionButton.setText("UPDATE");
         if (editCategory.getType().equals(CategoryType.EXPENSE)) {
             expense.setChecked(true);
@@ -108,8 +108,6 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         name.setText(editCategory.getName());
         addFragment(CategoryIcons.getInstance().getIcon(editCategory.getIcon()));
     }
-
-
 
 
     public void gotoCategoryActivity(View view) {
@@ -152,6 +150,7 @@ public class AddNewCategoryActivity extends AppCompatActivity {
         CategoryType type = getCategoryType();
         if (DataValidater.validateText(name) && type != null) {
             Category category = new Category();
+            category.setUser(AuthController.newInstance().getUser().getId());
             category.setName(name.getText().toString());
             category.setIcon(iconSelecterFragment.getSelectedIconId());
             Date today = new Date();

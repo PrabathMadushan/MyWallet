@@ -16,7 +16,7 @@ public class Category implements Serializable {
     public final static String FIELD_TYPE = "type";
     public final static String FIELD_DATE = "dateTime";
     public final static String FIELD_DEFAULT = "defaultx";
-    public final static String FIELD_USER = "defaultx";
+    public final static String FIELD_USER = "user";
 
 
     private final String id;
@@ -28,7 +28,7 @@ public class Category implements Serializable {
     private boolean defaultx = false;
 
     public Category() {
-        id = FirestoreController.genareteRandomKey();
+        id = FirestoreController.generateRandomKey();
     }
 
     public Category(CategoryType type, int icon, String name, Date dateTime) {
@@ -36,7 +36,7 @@ public class Category implements Serializable {
         this.icon = icon;
         this.type = type;
         this.dateTime = dateTime;
-        id = FirestoreController.genareteRandomKey();
+        id = FirestoreController.generateRandomKey();
     }
 
     public String getId() {

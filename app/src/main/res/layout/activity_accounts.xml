@@ -14,7 +14,7 @@
         app:layout_anchor="@+id/constraintLayout"
         android:layout_margin="25dp"
         app:fabSize="mini"
-        android:onClick="gotoAddnewAccount"
+        android:onClick="gotoAddNewAccount"
         app:layout_anchorGravity="end|bottom"
         app:srcCompat="@drawable/ic_nui_addx" />
 
@@ -41,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:id="@+id/include3"
+            android:background="@drawable/style_list_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

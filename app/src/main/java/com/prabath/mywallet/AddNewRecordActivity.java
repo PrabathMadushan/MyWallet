@@ -85,8 +85,6 @@ public class AddNewRecordActivity extends AppCompatActivity {
 
     private void init() {
         record = (Record) getIntent().getSerializableExtra(AccountActivity.EXTRA_RECORD);
-
-
         ImageView btnRoute = findViewById(R.id.btnRoute);
         ImageView btnLocation = findViewById(R.id.btnLocation);
         FragmentManager manager = getSupportFragmentManager();
@@ -255,6 +253,12 @@ public class AddNewRecordActivity extends AppCompatActivity {
     private Time time;
         *
         * */
+        if (record.getDate() == null) {
+            record.setDate(new Date(new java.util.Date().getTime()));
+        }
+        if (record.getTime() == null) {
+            record.setTime(new Time(new java.util.Date().getTime()));
+        }
         record.setId(LocalDatabaseController.genareteRandomKey());
         if(record.getLocation().getType()== GLocation.Type.LOCATION){
             record.setLocation(locationFragment.getSelectedLocation());

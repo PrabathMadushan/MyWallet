@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -16,13 +17,15 @@ import com.prabath.mywallet.Others.AccountIcons;
 import com.prabath.mywallet.Others.DataValidater;
 import com.prabath.mywallet.fregments.IconSelecterFragment;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import database.local.LocalDatabaseController;
-import database.local.LocalDatabaseHelper;
-import database.local.models.Account;
+import database.firebase.auth.AuthController;
+import database.firebase.firestore.FirestoreController;
+import database.firebase.models.Account;
+
+//import database.local.LocalDatabaseController;
+//import database.local.LocalDatabaseHelper;
+//import database.local.models.Account;
 
 public class AddNewAccountActivity extends AppCompatActivity {
 
@@ -33,9 +36,10 @@ public class AddNewAccountActivity extends AppCompatActivity {
 
 
     private String type = null;
+
     private Account editAccount = null;
 
-    private LocalDatabaseController.TableAccount tableAccount;
+    private FirestoreController.CollectionAccounts collectionAccounts;
 
     private IconSelecterFragment iconSelecterFragment;
     private EditText name;
@@ -61,41 +65,41 @@ public class AddNewAccountActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
-        tableAccount = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableAccount();
+        // tableAccount = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableAccount();
+        collectionAccounts = FirestoreController.newInstance().new CollectionAccounts();
         name = findViewById(R.id.txtName);
         description = findViewById(R.id.txtDiscription);
 
     }
 
     private void setupForAddNew() {
-        ((TextView)findViewById(R.id.btnAction)).setText("ADD");
+        ((TextView) findViewById(R.id.btnAction)).setText("ADD");
         addFragment();
     }
 
     private void setupForEdit(String accountid) {
-        Button action=findViewById(R.id.btnAction);
+        Button action = findViewById(R.id.btnAction);
         action.setText("UPDATE");
-        Drawable img = this.getResources().getDrawable( R.drawable.ic_nui_edit);
-        img.setBounds( 0, 0, 60, 60 );
-        action.setCompoundDrawables( img, null, null, null );
-        List<Account> account = tableAccount.get(Account.FIELD_ID + "='" + accountid + "'");
-        editAccount = account.get(0);
-        name.setText(editAccount.getName());
-        description.setText(editAccount.getDes());
-        addFragment();
-    }
+        Drawable img = this.getResources().getDrawable(R.drawable.ic_nui_edit);
+        img.setBounds(0, 0, 60, 60);
+        action.setCompoundDrawables(img, null, null, null);
+        collectionAccounts.getById(accountid, list -> {
+            editAccount = list.get(0);
+            name.setText(editAccount.getName());
+            description.setText(editAccount.getDes());
+            addFragment();
+        });
 
+    }
 
 
     public void addFragment() {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        iconSelecterFragment = IconSelecterFragment.getInstance(AccountIcons.getInstance(), AccountIcons.getInstance().getIcon((editAccount==null)?1:Integer.parseInt(editAccount.getIcon())));
+        iconSelecterFragment = IconSelecterFragment.getInstance(AccountIcons.getInstance(), AccountIcons.getInstance().getIcon((editAccount == null) ? 1 : editAccount.getIcon()));
         transaction.replace(R.id.fragment_wraper, iconSelecterFragment);
         transaction.commit();
     }
-
-
 
 
     public void doAction(View view) {
@@ -107,8 +111,8 @@ public class AddNewAccountActivity extends AppCompatActivity {
 
     }
 
-    private void back(){
-        Intent intent=new Intent(this,AccountsActivity.class);
+    private void back() {
+        Intent intent = new Intent(this, AccountsActivity.class);
         startActivity(intent);
     }
 
@@ -117,31 +121,35 @@ public class AddNewAccountActivity extends AppCompatActivity {
     }
 
     private void saveAccount() {
-
-        if(DataValidater.validateText(name)){
+        if (DataValidater.validateText(name)) {
             Account account = new Account();
-            account.setId(LocalDatabaseController.genareteRandomKey());
             account.setName(name.getText().toString());
             account.setDes(description.getText().toString());
-            account.setIcon(iconSelecterFragment.getSelectedIconId() + "");
-            account.setDefault(false);
-            Date date=new Date();
-            String today=new SimpleDateFormat("yyyy:MM:dd").format(date);
-            String now=new SimpleDateFormat("hh:mm:ss").format(date);
-            account.setDate(today);
-            account.setTime(now);
-            tableAccount.add(account);
+            account.setIcon(iconSelecterFragment.getSelectedIconId());
+            account.setDefaultx(false);
+            account.setUser(AuthController.newInstance().getUser().getId());
+            Date date = new Date();
+            account.setDateTime(date);
+            collectionAccounts.add(account).addOnSuccessListener(v -> {
+                Toast.makeText(this, "Account Added", Toast.LENGTH_SHORT).show();
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
             back();
         }
     }
 
     private void updateAccount() {
-        if(DataValidater.validateText(name)){
+        if (DataValidater.validateText(name)) {
             Account account = editAccount;
             account.setName(name.getText().toString());
             account.setDes(description.getText().toString());
-            // account.setIcon(iconSelecterFragment.getSelectedIconId());
-            tableAccount.update(account);
+            account.setIcon(iconSelecterFragment.getSelectedIconId());
+            collectionAccounts.update(account).addOnSuccessListener(v -> {
+                Toast.makeText(this, "Account Updated ", Toast.LENGTH_SHORT).show();
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
             back();
         }
     }

@@ -5,21 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.prabath.mywallet.Others.Init;
+
+import database.firebase.auth.AuthController;
 
 public class SplashActivity extends AppCompatActivity {
 
     float dX, dY;
     float sX,sY;
-
-    private FirebaseAuth firebaseAuth;
+    AuthController authController;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +26,14 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 //        particleView=findViewById(R.id.particleView);
         final ImageView logo = findViewById(R.id.logo);
-        firebaseAuth = FirebaseAuth.getInstance();
+        authController = AuthController.newInstance();
 
 
         Init.getInstance(this).setup();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (firebaseAuth.getCurrentUser() != null) {
+                if (authController.isAuthenticated()) {
                     Intent i = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(i);
                 } else {
@@ -45,35 +44,31 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 5000);
 
-        logo.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        dX = view.getX() - event.getRawX();
-                        dY = view.getY() - event.getRawY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        view.animate()
-                                .x(event.getRawX() + dX )
-                                .y(event.getRawY() + dY )
-                                .setDuration(0)
-                                .start();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        view.animate()
-                                .x(sX)
-                                .y(sY)
-                                .setDuration(1000)
-                                .setInterpolator(new AccelerateDecelerateInterpolator())
-                                .start();
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
+        logo.setOnTouchListener((view, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    dX = view.getX() - event.getRawX();
+                    dY = view.getY() - event.getRawY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    view.animate()
+                            .x(event.getRawX() + dX)
+                            .y(event.getRawY() + dY)
+                            .setDuration(0)
+                            .start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    view.animate()
+                            .x(sX)
+                            .y(sY)
+                            .setDuration(1000)
+                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                            .start();
+                    break;
+                default:
+                    return false;
             }
-
+            return true;
         });
     }
 
@@ -88,5 +83,18 @@ public class SplashActivity extends AppCompatActivity {
         sY = l[1];
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Handler().postDelayed(() -> {
+            if (authController.isAuthenticated()) {
+                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(i);
+            } else {
+                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(i);
+            }
 
+        }, 5000);
+    }
 }

@@ -27,7 +27,7 @@ public class User implements Serializable {
     private Date dateTime;
 
     public User() {
-        id = FirestoreController.genareteRandomKey();
+        id = FirestoreController.generateRandomKey();
     }
 
     public Date getDateTime() {

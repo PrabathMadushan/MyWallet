@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,8 +47,7 @@ public class CategoriesActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        //recyclerView.setItemAnimator(new DefaultItemAnimator());
-        collectionCategories = FirestoreController.newInstance(null).new CollectionCategories();
+        collectionCategories = FirestoreController.newInstance().new CollectionCategories();
         categoryAdapter = new CategoryAdapter(categories, getEditListener(), getDeleteListener());
         recyclerView.setAdapter(categoryAdapter);
         showCategories();
@@ -99,8 +99,15 @@ public class CategoriesActivity extends AppCompatActivity {
             categories.addAll(list);
             categoryAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
-
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         });
+        collectionCategories.getAllDefaults(list -> {
+            categories.addAll(list);
+            categoryAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+
     }
 
     public void gotoAddCategory(View view) {

@@ -29,7 +29,7 @@ public class Account implements Serializable {
 
 
     public Account() {
-        id = FirestoreController.genareteRandomKey();
+        id = FirestoreController.generateRandomKey();
     }
 
     public Account(String name, String des, int icon, Date dateTime) {
@@ -37,7 +37,7 @@ public class Account implements Serializable {
         this.des = des;
         this.icon = icon;
         this.dateTime = dateTime;
-        id = FirestoreController.genareteRandomKey();
+        id = FirestoreController.generateRandomKey();
     }
 
     public String getId() {
@@ -91,4 +91,6 @@ public class Account implements Serializable {
     public void setUser(String user) {
         this.user = user;
     }
+
+
 }
