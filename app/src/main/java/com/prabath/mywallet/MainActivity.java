@@ -16,8 +16,6 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -26,6 +24,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+
+import database.firebase.auth.AuthController;
+import database.firebase.firestore.FirestoreController;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,17 +46,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Testing
-        drawChart();
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             View headerView = navigationView.getHeaderView(0);
             TextView naviEmail = headerView.findViewById(R.id.naviEmail);
             naviEmail.setText(currentUser.getEmail());
         }
-
+        FirestoreController firestoreController = FirestoreController.newInstance();
+        collectionAccounts = firestoreController.new CollectionAccounts();
+        collectionRecords = firestoreController.new CollectionRecords();
+        drawChart();
 
     }
 
+    FirestoreController.CollectionAccounts collectionAccounts;
+    FirestoreController.CollectionRecords collectionRecords;
     public void openNavigationDrawer(View view) {
         YoYo.with(Techniques.RubberBand).duration(200).onEnd(animator -> {
             if (!drawer.isDrawerOpen(GravityCompat.START)) drawer.openDrawer(GravityCompat.START);
@@ -106,21 +112,25 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_categories) {
             Intent intentCategories = new Intent(this, CategoriesActivity.class);
             startActivity(intentCategories);
-        } else if (id == R.id.nav_budget) {
-            Intent intentAccount = new Intent(this, BudgetsActivity.class);
+        }
+//        else if (id == R.id.nav_budget) {
+//            Intent intentAccount = new Intent(this, BudgetsActivity.class);
+//            startActivity(intentAccount);
+//        } else if (id == R.id.nav_reports) {
+//            Intent intentAccount = new Intent(this, ReportsActivity.class);
+//            startActivity(intentAccount);
+//        }
+        else if (id == R.id.nav_about) {
+            Intent intentAccount = new Intent(this, CurrencyConverterActivity.class);
             startActivity(intentAccount);
-        } else if (id == R.id.nav_reports) {
-            Intent intentAccount = new Intent(this, ReportsActivity.class);
-            startActivity(intentAccount);
-        } else if (id == R.id.nav_about) {
-            Intent intentAccount = new Intent(this, AboutActivity.class);
-            startActivity(intentAccount);
-        } else if (id == R.id.nav_settings) {
-            Intent intentAccount = new Intent(this, SettingsActivity.class);
-            startActivity(intentAccount);
-        } else if (id == R.id.nav_logout) {
+        }
+//        else if (id == R.id.nav_settings) {
+//            Intent intentAccount = new Intent(this, SettingsActivity.class);
+//            startActivity(intentAccount);
+//        }
+        else if (id == R.id.nav_logout) {
             if (currentUser != null)
-                FirebaseAuth.getInstance().signOut();
+                AuthController.newInstance().signOut();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -141,48 +151,30 @@ public class MainActivity extends AppCompatActivity
     //Testing
 
     public void drawChart() {
+        collectionRecords.getAll(rs -> {
+            for (int i = 0; i < rs.size(); i++) {
+                list.add(new BarEntry(i * 10, rs.get(i).getValue()));
+            }
+            rDrawChart();
+        });
+
+    }
+
+
+    ArrayList<BarEntry> list = new ArrayList<>();
+
+    private void rDrawChart() {
         BarChart chart = findViewById(R.id.pieChart);
-        ArrayList<BarEntry> list = new ArrayList<>();
-        list.add(new BarEntry(0, 20));
-        list.add(new BarEntry(10, 90));
-        list.add(new BarEntry(20, 15));
-        list.add(new BarEntry(30, 85));
-        list.add(new BarEntry(40, 18));
-        list.add(new BarEntry(50, 40));
-        list.add(new BarEntry(60, 50));
+
 
         BarDataSet dataSet = new BarDataSet(list, "Projects");
         BarData data = new BarData(dataSet);
         chart.setData(data);
-
         //Custermize chart
         chart.setDescription(null);
         data.setBarWidth(8);
         chart.setFitBars(true);
-        chart.setClickable(false);
-
-        ArrayList<LegendEntry> legendEntries = new ArrayList<>();
-        String names[] = {"Transport", "Books", "Tax", "Shopping", "Telephone", "Vehicles", "Students"};
-        int cs[] = {
-                R.color.primaryBlueDark
-                , R.color.primaryRoseDark
-                , R.color.primaryBlueLight
-                , R.color.primaryRoseLight
-                , R.color.colorPrimary
-                , R.color.colorAccent
-                , R.color.darkGray};
-        ArrayList<Integer> colors = new ArrayList<>();
-        for (int i = 0; i < names.length; i++) {
-            colors.add(getResources().getColor(cs[i]));
-            legendEntries.add(new LegendEntry(names[i], Legend.LegendForm.SQUARE, Float.NaN, Float.NaN, null,
-                    getResources().getColor(cs[i])));
-        }
-        dataSet.setColors(colors);
-        chart.getLegend().setCustom(legendEntries);
-        chart.getLegend().setWordWrapEnabled(true);
-        chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         chart.animateY(2000, Easing.EaseInCubic);
-
         chart.invalidate();
     }
 

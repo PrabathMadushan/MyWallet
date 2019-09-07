@@ -39,11 +39,14 @@ import com.prabath.mywallet.R;
 import java.util.Arrays;
 import java.util.List;
 
-import database.local.models.GLocation;
-import database.local.models.Record;
+import database.firebase.models.GLocation;
+import database.firebase.models.Record;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+
+//import database.local.models.GLocation;
+//import database.local.models.Record;
 
 public class AddLocationFragment extends Fragment implements OnMapReadyCallback {
 

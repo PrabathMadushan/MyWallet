@@ -2,9 +2,10 @@ package database.firebase.models;
 
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import database.firebase.firestore.FirestoreController;
+import database.firebase.listeners.ReadCompleteListener;
 
 public class Record implements Serializable {
 
@@ -18,6 +19,7 @@ public class Record implements Serializable {
     public static final String FIELD_IMAGE = "image";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_DATE_TIME = "dateTime";
+    public static final String FIELD_USER = "user";
 
     private final String id;
     private float value;
@@ -25,6 +27,7 @@ public class Record implements Serializable {
     private String account;
     private GLocation location;
     private String image;
+    private String user;
     private String description;
     private Date dateTime;
 
@@ -55,16 +58,24 @@ public class Record implements Serializable {
         this.value = value;
     }
 
+    public void getCategoryX(ReadCompleteListener<Category> completeListener) {
+        FirestoreController.newInstance().new CollectionCategories().getById(category, completeListener);
+    }
+
     public String getCategory() {
         return category;
+    }
+
+    public String getAccount() {
+        return account;
     }
 
     public void setCategory(String category) {
         this.category = category;
     }
 
-    public String getAccount() {
-        return account;
+    public void getAccountX(ReadCompleteListener<Account> completeListener) {
+        FirestoreController.newInstance().new CollectionAccounts().getById(account, completeListener);
     }
 
     public void setAccount(String account) {
@@ -101,5 +112,13 @@ public class Record implements Serializable {
 
     public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

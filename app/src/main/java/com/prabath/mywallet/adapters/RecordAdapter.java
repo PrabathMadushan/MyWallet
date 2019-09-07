@@ -21,8 +21,9 @@ import com.prabath.mywallet.R;
 
 import java.util.List;
 
-import database.local.models.CategoryType;
-import database.local.models.Record;
+import database.firebase.models.CategoryType;
+import database.firebase.models.Record;
+
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHolder> {
 
@@ -48,16 +49,20 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     public void onBindViewHolder(@NonNull RecordAdapter.MyViewHolder holder, int position) {
         Record record = records.get(position);
         holder.value.setText(Commons.formatCurrency(record.getValue()));
-        holder.categoryIcon.setImageResource(CategoryIcons.getInstance().getIcon(Integer.parseInt(record.getCategory().getIcon())));
-        if (record.getCategory().getType() == CategoryType.EXPENSE) {
-            holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryRoseDark), android.graphics.PorterDuff.Mode.SRC_IN);
-        } else {
-            holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryBlueDark), android.graphics.PorterDuff.Mode.SRC_IN);
-        }
-        if (position > lastPosition) {
-            YoYo.with(Techniques.ZoomInUp).duration(200).playOn(holder.root);
-            lastPosition = position;
-        }
+        record.getCategoryX(c -> {
+            holder.categoryIcon.setImageResource(CategoryIcons.getInstance().getIcon(c.get(0).getIcon()));
+
+            if (c.get(0).getType() == CategoryType.EXPENSE) {
+                holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryRoseDark), android.graphics.PorterDuff.Mode.SRC_IN);
+            } else {
+                holder.categoryIcon.setColorFilter(ContextCompat.getColor(holder.root.getContext(), R.color.primaryBlueDark), android.graphics.PorterDuff.Mode.SRC_IN);
+            }
+            if (position > lastPosition) {
+                YoYo.with(Techniques.ZoomInUp).duration(200).playOn(holder.root);
+                lastPosition = position;
+            }
+        });
+
 
     }
 

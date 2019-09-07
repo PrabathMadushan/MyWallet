@@ -18,6 +18,9 @@ public class GLocation implements Serializable {
     private String name;
 
 
+    public GLocation() {
+    }
+
     public GLocation(Type type) {
         this.type = type;
     }
@@ -30,6 +33,14 @@ public class GLocation implements Serializable {
         } else {
             setRoute(data);
         }
+    }
+
+    public void setStartLocation(Location startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public void setEndLocation(Location endLocation) {
+        this.endLocation = endLocation;
     }
 
     private void setLocation(String data) {
@@ -55,13 +66,13 @@ public class GLocation implements Serializable {
         startLocation = new Location(lat, lng);
     }
 
-    public void setStartLocation(LatLng location) {
+    public void setStartLocationX(LatLng location) {
         double lat = location.latitude;
         double lng = location.longitude;
         startLocation = new Location(lat, lng);
     }
 
-    public void setEndLocation(LatLng location) {
+    public void setEndLocationX(LatLng location) {
         double lat = location.latitude;
         double lng = location.longitude;
         endLocation = new Location(lat, lng);
@@ -121,29 +132,4 @@ public class GLocation implements Serializable {
         }
     }
 
-    private class Location implements Serializable {
-        private double latitude;
-        private double longitude;
-
-        private Location(double latitude, double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
-
-        private double getLatitude() {
-            return latitude;
-        }
-
-
-        private double getLongitude() {
-            return longitude;
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return latitude + "," + latitude;
-        }
-    }
 }

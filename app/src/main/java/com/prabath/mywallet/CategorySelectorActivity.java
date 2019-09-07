@@ -24,19 +24,27 @@ import com.prabath.mywallet.Listeners.CategorySelectListener;
 import com.prabath.mywallet.adapters.CategoryItemAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import database.local.LocalDatabaseController;
-import database.local.LocalDatabaseHelper;
-import database.local.models.Category;
-import database.local.models.CategoryType;
-import database.local.models.GLocation;
-import database.local.models.Record;
+import database.firebase.firestore.FirestoreController;
+import database.firebase.models.Category;
+import database.firebase.models.CategoryType;
+import database.firebase.models.GLocation;
+import database.firebase.models.Record;
+
+//import database.local.LocalDatabaseController;
+//import database.local.LocalDatabaseHelper;
+//import database.local.models.Category;
+//import database.local.models.CategoryType;
+//import database.local.models.GLocation;
+//import database.local.models.Record;
 
 public class CategorySelectorActivity extends AppCompatActivity implements CategorySelectListener {
 
     private Record record;
 
+//    private LocalDatabaseController.TableCategory tableCategory;
+
+    private FirestoreController.CollectionCategories collectionCategories;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +61,8 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
 
 
     private void init() {
-        tableCategory = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableCategory();
+        //tableCategory = LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableCategory();
+        collectionCategories = FirestoreController.newInstance().new CollectionCategories();
         final Button income = findViewById(R.id.btnIncome);
         final Button expense = findViewById(R.id.btnExpense);
         final ConstraintLayout wraper = findViewById(R.id.iconsWraper);
@@ -69,8 +78,8 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
 
 
                 YoYo.with(Techniques.FadeOutRight).onEnd(animator -> {
-                    showCatIncomes();
-                    YoYo.with(Techniques.FadeInLeft).duration(200).playOn(wraper);
+                    showCatIncomes(wraper);
+
                 }).duration(200).playOn(wraper);
             }
         });
@@ -87,8 +96,8 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
                 YoYo.with(Techniques.FadeOutLeft).onEnd(new YoYo.AnimatorCallback() {
                     @Override
                     public void call(Animator animator) {
-                        showCatExpences();
-                        YoYo.with(Techniques.FadeInRight).duration(200).playOn(wraper);
+                        showCatExpences(wraper);
+
                     }
                 }).duration(200).playOn(wraper);
             }
@@ -113,7 +122,7 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
             recyclerView.setLayoutManager(layoutManager);
             adapter = new CategoryItemAdapter(categories, this);
             recyclerView.setAdapter(adapter);
-            showCatExpences();
+            showCatExpences(null);
             firstTime = false;
         } else {
             GridLayoutManager layoutManager;
@@ -127,20 +136,28 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
         }
     }
 
-    private LocalDatabaseController.TableCategory tableCategory;
 
-    private void showCatExpences() {
-        List<Category> cs = tableCategory.get(Category.FIELD_TYPE + "='" + CategoryType.EXPENSE.toString() + "'");
+    private void showCatExpences(ConstraintLayout wraper) {
+        //List<Category> cs = tableCategory.get(Category.FIELD_TYPE + "='" + CategoryType.EXPENSE.toString() + "'");
         categories.clear();
-        categories.addAll(cs);
         adapter.notifyDataSetChanged();
+        collectionCategories.getByType(CategoryType.EXPENSE, cat -> {
+            categories.addAll(cat);
+            adapter.notifyDataSetChanged();
+            if (wraper != null) YoYo.with(Techniques.FadeInRight).duration(200).playOn(wraper);
+        });
+
     }
 
-    private void showCatIncomes() {
-        List<Category> cs = tableCategory.get(Category.FIELD_TYPE + "='" + CategoryType.INCOME.toString() + "'");
+    private void showCatIncomes(ConstraintLayout wraper) {
+//        List<Category> cs = tableCategory.get(Category.FIELD_TYPE + "='" + CategoryType.INCOME.toString() + "'");
         categories.clear();
-        categories.addAll(cs);
         adapter.notifyDataSetChanged();
+        collectionCategories.getByType(CategoryType.INCOME, cats -> {
+            categories.addAll(cats);
+            adapter.notifyDataSetChanged();
+            if (wraper != null) YoYo.with(Techniques.FadeInLeft).duration(200).playOn(wraper);
+        });
     }
 
     @Override
@@ -154,7 +171,7 @@ public class CategorySelectorActivity extends AppCompatActivity implements Categ
     @Override
     public void onSelect(int position, Category category, ImageView icon, TextView name) {
         Intent intent = new Intent(this, AddNewRecordActivity.class);
-        record.setCategory(category);
+        record.setCategory(category.getId());
         if (record.getLocation() == null) {
             if (category.getName().equals("Transportation")) {
                 record.setLocation(new GLocation(GLocation.Type.ROUTE));

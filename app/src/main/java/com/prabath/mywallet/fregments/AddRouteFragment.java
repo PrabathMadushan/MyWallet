@@ -49,11 +49,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import database.local.models.GLocation;
-import database.local.models.Record;
+import database.firebase.models.GLocation;
+import database.firebase.models.Record;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+
+//import database.local.models.GLocation;
+//import database.local.models.Record;
 
 
 public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
@@ -111,7 +114,7 @@ public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
         searchMyLocationOrigin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                record.getLocation().setStartLocation(getMyLocation());
+                record.getLocation().setStartLocationX(getMyLocation());
                 updateMap();
             }
         });
@@ -124,7 +127,7 @@ public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
         searchMyLocationDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                record.getLocation().setEndLocation(getMyLocation());
+                record.getLocation().setEndLocationX(getMyLocation());
                 updateMap();
             }
         });
@@ -192,7 +195,7 @@ public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 GLocation location = record.getLocation();
-                location.setStartLocation(place.getLatLng());
+                location.setStartLocationX(place.getLatLng());
                 updateMap();
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -204,7 +207,7 @@ public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 GLocation location = record.getLocation();
-                location.setEndLocation(place.getLatLng());
+                location.setEndLocationX(place.getLatLng());
                 updateMap();
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -219,10 +222,10 @@ public class AddRouteFragment extends Fragment implements OnMapReadyCallback {
         mMap.clear();
         GLocation location = record.getLocation();
         if (location.getStartLocation() == null) {
-            record.getLocation().setStartLocation(getMyLocation());
+            record.getLocation().setStartLocationX(getMyLocation());
         }
         if (location.getEndLocation() == null) {
-            record.getLocation().setEndLocation(getMyLocation());
+            record.getLocation().setEndLocationX(getMyLocation());
         }
         CameraUpdate cameraUpdate;
         if (location.getStartLocation().equals(location.getEndLocation())) {

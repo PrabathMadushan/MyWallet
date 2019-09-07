@@ -16,6 +16,8 @@ import database.firebase.auth.AuthController;
 import database.firebase.listeners.ReadCompleteListener;
 import database.firebase.models.Account;
 import database.firebase.models.Category;
+import database.firebase.models.CategoryType;
+import database.firebase.models.Record;
 import database.firebase.models.User;
 
 public class FirestoreController {
@@ -69,7 +71,62 @@ public class FirestoreController {
     }
 
     public class CollectionRecords {
+        public Task<Void> add(Record record) {
+            return db.collection(Record.COLLECTION).document(record.getId()).set(record);
+        }
 
+        public Task<Void> update(Record record) {
+            return db.collection(Record.COLLECTION).document(record.getId()).set(record);
+        }
+
+        public Task<Void> remove(Record record) {
+            return db.collection(Account.COLLECTION).document(record.getId()).delete();
+        }
+
+        public Task<QuerySnapshot> getAll(final ReadCompleteListener<Record> completeListener) {
+            return db.collection(Record.COLLECTION)
+                    .whereEqualTo(Record.FIELD_USER, AuthController.newInstance().getUser().getId())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        ArrayList<Record> records = new ArrayList<>();
+                        if (task.isComplete()) {
+                            if (task.getResult() != null)
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Record account = documentSnapshot.toObject(Record.class);
+                                    records.add(account);
+                                }
+                            if (completeListener != null) completeListener.onReadComplete(records);
+                        } else {
+                            if (completeListener != null) completeListener.onReadComplete(records);
+                        }
+                    });
+        }
+
+        public Task<QuerySnapshot> getByAccount(String accountid, final ReadCompleteListener<Record> completeListener) {
+            return getByField(Record.FIELD_ACCOUNT, accountid, list -> {
+                if (completeListener != null) completeListener.onReadComplete(list);
+            });
+        }
+
+        private Task<QuerySnapshot> getByField(String fieldName, Object value, final ReadCompleteListener<Record> completeListener) {
+            return db.collection(Record.COLLECTION)
+                    .whereEqualTo(fieldName, value)
+                    .whereEqualTo(Record.FIELD_USER, AuthController.newInstance().getUser().getId())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        ArrayList<Record> records = new ArrayList<>();
+                        if (task.isComplete()) {
+                            if (task.getResult() != null)
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Record category = documentSnapshot.toObject(Record.class);
+                                    records.add(category);
+                                }
+                            if (completeListener != null) completeListener.onReadComplete(records);
+                        } else {
+                            if (completeListener != null) completeListener.onReadComplete(records);
+                        }
+                    });
+        }
     }
 
     public class CollectionAccounts {
@@ -87,35 +144,42 @@ public class FirestoreController {
         }
 
         public Task<QuerySnapshot> getAll(final ReadCompleteListener<Account> completeListener) {
-            return db.collection(Account.COLLECTION).whereEqualTo(Account.FIELD_USER, AuthController.newInstance().getUser()).get().addOnCompleteListener(task -> {
-                ArrayList<Account> accounts = new ArrayList<>();
-                if (task.isComplete()) {
-                    if (task.getResult() != null)
-                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                            Account account = documentSnapshot.toObject(Account.class);
-                            accounts.add(account);
+            return db.collection(Account.COLLECTION)
+                    .whereEqualTo(Account.FIELD_USER, AuthController.newInstance().getUser().getId())
+                    .orderBy(Account.FIELD_DATE_TIME, Query.Direction.DESCENDING)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        ArrayList<Account> accounts = new ArrayList<>();
+                        if (task.isComplete()) {
+                            if (task.getResult() != null)
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Account account = documentSnapshot.toObject(Account.class);
+                                    accounts.add(account);
+                                }
+                            if (completeListener != null) completeListener.onReadComplete(accounts);
+                        } else {
+                            if (completeListener != null) completeListener.onReadComplete(accounts);
                         }
-                    if (completeListener != null) completeListener.onReadComplete(accounts);
-                } else {
-                    if (completeListener != null) completeListener.onReadComplete(accounts);
-                }
-            });
+                    });
         }
 
         public Task<QuerySnapshot> getAllDefaults(final ReadCompleteListener<Account> completeListener) {
-            return db.collection(Account.COLLECTION).whereEqualTo(Account.FIELD_IS_DEFAULT, true).get().addOnCompleteListener(task -> {
-                ArrayList<Account> accounts = new ArrayList<>();
-                if (task.isComplete()) {
-                    if (task.getResult() != null)
-                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                            Account account = documentSnapshot.toObject(Account.class);
-                            accounts.add(account);
+            return db.collection(Account.COLLECTION)
+                    .whereEqualTo(Account.FIELD_IS_DEFAULT, true)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        ArrayList<Account> accounts = new ArrayList<>();
+                        if (task.isComplete()) {
+                            if (task.getResult() != null)
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Account account = documentSnapshot.toObject(Account.class);
+                                    accounts.add(account);
+                                }
+                            if (completeListener != null) completeListener.onReadComplete(accounts);
+                        } else {
+                            if (completeListener != null) completeListener.onReadComplete(accounts);
                         }
-                    if (completeListener != null) completeListener.onReadComplete(accounts);
-                } else {
-                    if (completeListener != null) completeListener.onReadComplete(accounts);
-                }
-            });
+                    });
         }
 
         public Task<QuerySnapshot> getById(String id, final ReadCompleteListener<Account> completeListener) {
@@ -159,7 +223,7 @@ public class FirestoreController {
         public Task<QuerySnapshot> getAll(final ReadCompleteListener<Category> completeListener) {
             return db.collection(Category.COLLECTION)
                     .whereEqualTo(Category.FIELD_USER, AuthController.newInstance().getUser().getId())
-                    .orderBy(Category.FIELD_DATE, Query.Direction.DESCENDING)
+                    .orderBy(Category.FIELD_DATE_TIME, Query.Direction.DESCENDING)
                     .get()
                     .addOnCompleteListener(task -> {
                         ArrayList<Category> categories = new ArrayList<>();
@@ -179,7 +243,7 @@ public class FirestoreController {
         public Task<QuerySnapshot> getAllDefaults(final ReadCompleteListener<Category> completeListener) {
             return db.collection(Category.COLLECTION)
                     .whereEqualTo(Category.FIELD_DEFAULT, true)
-                    .orderBy(Category.FIELD_DATE, Query.Direction.DESCENDING)
+                    .orderBy(Category.FIELD_DATE_TIME, Query.Direction.DESCENDING)
                     .get()
                     .addOnCompleteListener(task -> {
                         ArrayList<Category> categories = new ArrayList<>();
@@ -197,12 +261,18 @@ public class FirestoreController {
         }
 
 
-
         public Task<QuerySnapshot> getById(String id, final ReadCompleteListener<Category> completeListener) {
             return getByField(Category.FIELD_ID, id, list -> {
                 if (completeListener != null) completeListener.onReadComplete(list);
             });
         }
+
+        public Task<QuerySnapshot> getByType(CategoryType type, final ReadCompleteListener<Category> completeListener) {
+            return getByField(Category.FIELD_TYPE, type, list -> {
+                if (completeListener != null) completeListener.onReadComplete(list);
+            });
+        }
+
 
         private Task<QuerySnapshot> getByField(String fieldName, Object value, final ReadCompleteListener<Category> completeListener) {
             return db.collection(Category.COLLECTION).whereEqualTo(fieldName, value).get().addOnCompleteListener(task -> {

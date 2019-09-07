@@ -8,17 +8,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.prabath.mywallet.Listeners.CategorySelectListener;
 import com.prabath.mywallet.Others.CategoryIcons;
 import com.prabath.mywallet.R;
-import com.prabath.mywallet.Listeners.CategorySelectListener;
 
 import java.util.List;
 
-import database.local.models.Category;
-import database.local.models.CategoryType;
+import database.firebase.models.Category;
+import database.firebase.models.CategoryType;
+
+//import database.local.models.Category;
+//import database.local.models.CategoryType;
 
 public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapter.MyViewHolder> {
 
@@ -45,7 +47,7 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapte
         final Category category = categories.get(i);
 
         myViewHolder.name.setText(category.getName());
-        myViewHolder.icon.setImageResource(CategoryIcons.getInstance().getIcon(Integer.parseInt(category.getIcon())));
+        myViewHolder.icon.setImageResource(CategoryIcons.getInstance().getIcon(category.getIcon()));
         if (category.getType()== CategoryType.INCOME){
             myViewHolder.icon.setBackgroundResource(R.drawable.style_button_circle_blue);
         }else{

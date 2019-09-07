@@ -8,12 +8,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.prabath.mywallet.Others.DataValidater;
 
-public class LoginActivity extends AppCompatActivity {
+import database.firebase.auth.AuthController;
 
-    private FirebaseAuth auth;
+public class LoginActivity extends AppCompatActivity {
 
     private EditText txtEmail;
     private EditText txtPassword;
@@ -27,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void init() {
-        auth = FirebaseAuth.getInstance();
         txtEmail = findViewById(R.id.txtEmail);
         txtPassword = findViewById(R.id.txtPassword);
     }
@@ -37,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
                 DataValidater.validateText(txtEmail)
                         && DataValidater.validateText(txtPassword)
         ) {
-            auth.signInWithEmailAndPassword(txtEmail.getText().toString(), txtPassword.getText().toString())
+            AuthController.newInstance().signInWithEmailAndPassword(txtEmail.getText().toString(), txtPassword.getText().toString())
                     .addOnSuccessListener(authResult -> {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);

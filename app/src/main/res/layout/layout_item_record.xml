@@ -39,6 +39,7 @@
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginBottom="8dp"
+            android:visibility="gone"
             android:background="@drawable/style_button_blue"
             android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"

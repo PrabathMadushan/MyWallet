@@ -14,7 +14,7 @@ public class Category implements Serializable {
     public final static String FIELD_NAME = "name";
     public final static String FIELD_ICON = "icon";
     public final static String FIELD_TYPE = "type";
-    public final static String FIELD_DATE = "dateTime";
+    public final static String FIELD_DATE_TIME = "dateTime";
     public final static String FIELD_DEFAULT = "defaultx";
     public final static String FIELD_USER = "user";
 

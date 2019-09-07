@@ -4,18 +4,17 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +26,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.prabath.mywallet.Others.CategoryIcons;
+import com.prabath.mywallet.dialogs.MyDialog;
 import com.prabath.mywallet.fregments.AddLocationFragment;
 import com.prabath.mywallet.fregments.AddPhotoFragment;
 import com.prabath.mywallet.fregments.AddRouteFragment;
@@ -37,12 +37,19 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import database.local.LocalDatabaseController;
-import database.local.LocalDatabaseHelper;
-import database.local.models.Category;
-import database.local.models.CategoryType;
-import database.local.models.GLocation;
-import database.local.models.Record;
+import database.firebase.auth.AuthController;
+import database.firebase.firestore.FirestoreController;
+import database.firebase.models.Category;
+import database.firebase.models.CategoryType;
+import database.firebase.models.GLocation;
+import database.firebase.models.Record;
+
+//import database.local.LocalDatabaseController;
+//import database.local.LocalDatabaseHelper;
+//import database.local.models.Category;
+//import database.local.models.CategoryType;
+//import database.local.models.GLocation;
+//import database.local.models.Record;
 
 public class AddNewRecordActivity extends AppCompatActivity {
 
@@ -52,6 +59,7 @@ public class AddNewRecordActivity extends AppCompatActivity {
 
     private Record record;
 
+    private FirestoreController.CollectionRecords collectionRecords;
     public AddNewRecordActivity() {
 
     }
@@ -62,23 +70,27 @@ public class AddNewRecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_record);
         initNumberPadComponents();
         init();
+        collectionRecords = FirestoreController.newInstance().new CollectionRecords();
         enterTransition();
     }
 
 
     private void enterTransition() {
         Record record = (Record) getIntent().getSerializableExtra(AccountActivity.EXTRA_RECORD);
-        Category c = record.getCategory();
-        ImageView cicon = findViewById(R.id.categoryicon);
-        TextView cname = findViewById(R.id.categoryname);
-        cname.setText(c.getName());
-        cicon.setImageResource(CategoryIcons.getInstance().getIcon(Integer.parseInt(c.getIcon())));
-        if (c.getType() == CategoryType.INCOME) {
-            cicon.setBackgroundResource(R.drawable.style_button_circle_blue);
-        } else {
-            cicon.setBackgroundResource(R.drawable.style_button_circle_rose);
-        }
-        cicon.setTransitionName(c.getName());
+        record.getCategoryX(cs -> {
+            Category c = cs.get(0);
+            ImageView cicon = findViewById(R.id.categoryicon);
+            TextView cname = findViewById(R.id.categoryname);
+            cname.setText(c.getName());
+            cicon.setImageResource(CategoryIcons.getInstance().getIcon(c.getIcon()));
+            if (c.getType() == CategoryType.INCOME) {
+                cicon.setBackgroundResource(R.drawable.style_button_circle_blue);
+            } else {
+                cicon.setBackgroundResource(R.drawable.style_button_circle_rose);
+            }
+            cicon.setTransitionName(c.getName());
+        });
+
 
     }
 
@@ -113,7 +125,7 @@ public class AddNewRecordActivity extends AppCompatActivity {
         btnAddRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addRecord();
+                addRecord(v);
             }
         });
         TextView btnDate = findViewById(R.id.btnDate);
@@ -209,57 +221,58 @@ public class AddNewRecordActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        selectCategory();
+        final DialogInterface.OnClickListener listener = (dialog, which) -> {
+            switch (which) {
+                case MyDialog.RESULT_YES:
+                    Intent intent = new Intent(AddNewRecordActivity.this, AccountActivity.class);
+                    record.getAccountX(a -> {
+                        intent.putExtra(AccountsActivity.EXTRA_ACCOUNT, a.get(0));
+                        startActivity(intent);
+                    });
+                    break;
+                case MyDialog.RESULT_NO:
+                    break;
+            }
+        };
+
+        new MyDialog(
+                AddNewRecordActivity.this,
+                "Cancel",
+                "Do you want to cancel?",
+                MyDialog.TYPE_QUESTION, listener
+        ).show();
     }
 
 
     public void setDate(View v) {
         Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                TextView txtDate = findViewById(R.id.btnDate);
-                record.setDate(new Date(year - 1900, month - 1, dayOfMonth));
-                txtDate.setText(record.getDate().toString());
-            }
+        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            TextView txtDate = findViewById(R.id.btnDate);
+            record.setDateTime(new Date(year - 1900, month - 1, dayOfMonth));
+            txtDate.setText(new SimpleDateFormat("yyyy:MM:dd").format(record.getDateTime()));
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     public void setTime(View view) {
         Calendar calendar = Calendar.getInstance();
-        new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                TextView txtDate = findViewById(R.id.btnTime);
-                java.util.Date date = new java.util.Date();
-                date.setHours(hourOfDay);
-                date.setMinutes(minute);
-                record.setTime(new Time(date.getTime()));
-                txtDate.setText(record.getTime().toString());
-            }
+        new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
+            TextView txtDate = findViewById(R.id.btnTime);
+            java.util.Date date = new java.util.Date();
+            date.setHours(hourOfDay);
+            date.setMinutes(minute);
+            record.setDateTime(date);
+            txtDate.setText(new SimpleDateFormat("hh:mm:ss a").format(record.getDateTime()));
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(this)).show();
     }
 
-    public void addRecord() {
-        /*
-    private String id;
-    private float value;
-    private Category category;
-    private Account account;
-    private GLocation location;
-    private String image;
-    private String description;
-    private Date date;
-    private Time time;
-        *
-        * */
-        if (record.getDate() == null) {
-            record.setDate(new Date(new java.util.Date().getTime()));
+    public void addRecord(View view) {
+        if (record.getDateTime() == null) {
+            record.setDateTime(new Date(new java.util.Date().getTime()));
         }
-        if (record.getTime() == null) {
-            record.setTime(new Time(new java.util.Date().getTime()));
+        if (record.getDateTime() == null) {
+            record.setDateTime(new Time(new java.util.Date().getTime()));
         }
-        record.setId(LocalDatabaseController.genareteRandomKey());
+        // record.setId(LocalDatabaseController.genareteRandomKey());
         if(record.getLocation().getType()== GLocation.Type.LOCATION){
             record.setLocation(locationFragment.getSelectedLocation());
         }else{
@@ -267,14 +280,22 @@ public class AddNewRecordActivity extends AppCompatActivity {
         }
         record.setImage(photoFragment.seveImage());
         record.setValue(Float.parseFloat(getValue()));
+        record.setUser(AuthController.newInstance().getUser().getId());
         EditText txtDes = findViewById(R.id.txtDescription);
         record.setDescription(txtDes.getText().toString());
-
-        LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableRecord().add(record);
-        Toast.makeText(this, "record added", Toast.LENGTH_SHORT).show();
+//        LocalDatabaseController.getInstance(LocalDatabaseHelper.getInstance(this)).new TableRecord().add(record);
+        collectionRecords.add(record).addOnSuccessListener(v -> {
+            Toast.makeText(this, "record added", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
         Intent intent=new Intent(this,AccountActivity.class);
-        intent.putExtra(AccountsActivity.EXTRA_ACCOUNT,record.getAccount());
-        startActivity(intent);
+        record.getAccountX(a -> {
+            view.setEnabled(false);
+            intent.putExtra(AccountsActivity.EXTRA_ACCOUNT, a.get(0));
+            startActivity(intent);
+        });
+
     }
 
 

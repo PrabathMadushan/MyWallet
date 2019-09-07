@@ -18,8 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.prabath.mywallet.Others.Init;
 import com.prabath.mywallet.R;
 import com.yalantis.ucrop.UCrop;
@@ -32,9 +30,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import database.local.models.Record;
+import database.firebase.models.Record;
 
 import static android.app.Activity.RESULT_OK;
+
+//import database.local.models.Record;
 
 
 public class AddPhotoFragment extends Fragment {
